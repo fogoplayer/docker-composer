@@ -22,7 +22,7 @@ while:
 
 		switch userChoice {
 		case "1":
-			fmt.Println(1)
+			createMixin()
 			break while
 
 		case "":

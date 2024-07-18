@@ -12,7 +12,7 @@ func main() {
 	for i, token := range ast {
 		if token.kind == variable {
 			ast[i] = handleVariable(token)
-			fmt.Print(ast[i])
+			fmt.Println(ast[i])
 		}
 	}
 	// fmt.Print(ast)
