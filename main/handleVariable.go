@@ -14,7 +14,7 @@ while:
 		fmt.Printf(`Choose a behavior for %s (2):
 	1) create a new mixin
 	2) reuse an existing mixin
-	`, token.name)
+`, token.name)
 		bytes, _ := fmt.Scanf("%s", &userChoice)
 		if bytes < 1 {
 			userChoice = ""

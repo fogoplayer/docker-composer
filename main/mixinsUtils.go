@@ -13,19 +13,19 @@ var mixinDirPath string = strings.Join([]string{home, ".config", "docker-compose
 
 func createMixin() {
 	// Create temporary mixin file
-	fmt.Println(mixinDirPath)
 	os.MkdirAll(mixinDirPath, os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
 	tempFilename := getMixinPathFromName(string(now))
-	os.WriteFile(tempFilename, []byte{}, os.ModePerm)
+	os.WriteFile(tempFilename, []byte("your mixin here"), os.ModePerm)
 
 	// edit file
+	fmt.Println("Opening mixin editor...")
 	openFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
 	var userSpecifiedMixinName string
-	fmt.Println("Choose a name for your mixin")
+	fmt.Print("Choose a name for your mixin: ")
 	fmt.Scanln(&userSpecifiedMixinName)
 
 	os.Rename(tempFilename, getMixinPathFromName(userSpecifiedMixinName))
