@@ -10,9 +10,12 @@ func main() {
 	check(err)
 	ast := tokenize(string(dat))
 	for i, token := range ast {
-		ast[i] = handleVariable(token)
+		if token.kind == variable {
+			ast[i] = handleVariable(token)
+			fmt.Print(ast[i])
+		}
 	}
-	fmt.Print(ast)
+	// fmt.Print(ast)
 }
 
 func check(err error) {
