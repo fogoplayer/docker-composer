@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
+	"strconv"
 	"time"
 )
 
@@ -31,22 +31,6 @@ func createMixin() string {
 	return getMixin(userSpecifiedMixinName)
 }
 
-func openFileInUserPreferredEditor(filename string) {
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		editor = os.Getenv("VISUAL")
-	}
-	if editor == "" {
-		editor = "/usr/bin/editor"
-	}
-
-	editorProcess := exec.Command(editor, filename)
-	editorProcess.Stdin = os.Stdin
-	editorProcess.Stdout = os.Stdout
-	editorProcess.Stderr = os.Stderr
-	editorProcess.Run()
-}
-
 func getMixinPathFromName(name string) string {
 	return segmentsToPath(mixinDirPath, name+".mxin")
 }
@@ -64,7 +48,7 @@ func listMixins() map[int]string {
 		filename := file.Name()
 		filename = filename[:len(filename)-5]
 
-		fmt.Println("\t", i, ")", filename)
+		fmt.Println("\t", strconv.Itoa(i)+")", filename)
 		numberToMixin[i] = filename
 	}
 

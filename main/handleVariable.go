@@ -56,10 +56,10 @@ func getUserMainMenuChoice(token Token) UserChoice {
 		defaultSelection = REUSE
 	}
 
-	fmt.Printf(`Choose a behavior for {{%s}} (%s):
+	fmt.Printf(`Options for  {{%s}}:
 	1) create a new mixin
 	2) reuse an existing mixin%s
-`, tokenName, defaultSelection, continueOption)
+How would you like to populate {{%s}}? (%s): `, tokenName, continueOption, tokenName, defaultSelection)
 
 	// process response
 	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
@@ -74,8 +74,9 @@ func getUserMainMenuChoice(token Token) UserChoice {
 func getUserMixinChoice() string {
 	defaultChoice := 1
 
-	fmt.Printf("Choose a mixin (%d):\n", defaultChoice)
+	fmt.Println("Saved mixins:")
 	numberToMixin := listMixins()
+	fmt.Printf("Which would you like to choose? (%d): ", defaultChoice)
 
 	/* bytes, err :=  */
 	userChoice := readLineFromStdInAsString(string(defaultChoice))

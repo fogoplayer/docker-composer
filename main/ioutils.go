@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -27,4 +28,20 @@ func readLineFromStdInAsString(defaultValue ...string) string {
 	} else {
 		return defaultValue[0]
 	}
+}
+
+func openFileInUserPreferredEditor(filename string) {
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		editor = os.Getenv("VISUAL")
+	}
+	if editor == "" {
+		editor = "/usr/bin/editor"
+	}
+
+	editorProcess := exec.Command(editor, filename)
+	editorProcess.Stdin = os.Stdin
+	editorProcess.Stdout = os.Stdout
+	editorProcess.Stderr = os.Stderr
+	editorProcess.Run()
 }
