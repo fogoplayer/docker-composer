@@ -19,7 +19,7 @@ const (
 func handleVariable(token Token) Token {
 tokenLoop:
 	for {
-		userChoice := getUserMainMenuChoice(token)
+		userChoice := getUserHandleVariableChoice(token)
 		var newValue string
 
 		switch userChoice {
@@ -41,7 +41,7 @@ tokenLoop:
 	return token
 }
 
-func getUserMainMenuChoice(token Token) UserChoice {
+func getUserHandleVariableChoice(token Token) UserChoice {
 
 	// Create prompt
 	tokenName := token.name
