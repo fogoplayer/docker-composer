@@ -19,7 +19,7 @@ func main() {
 	}
 
 	dockerfile := buildDockerfile(ast)
-	fmt.Println(dockerfile)
+	saveDockerFile(dockerfile)
 }
 
 func check(err error) {
@@ -37,4 +37,17 @@ func buildDockerfile(ast []Token) string {
 		}
 	}
 	return dockerfileBuilder.String()
+}
+
+func saveDockerFile(dockerfile string) {
+	var savePath string
+	fmt.Print("Enter a path to save your dockerfile to (~/): ")
+	fmt.Scanln(&savePath)
+	if savePath == "" {
+		savePath = os.Getenv("HOME")
+	}
+
+	savePath = strings.Join([]string{savePath, "dockerfile"}, string(os.PathSeparator))
+	os.WriteFile(savePath, []byte(dockerfile), os.ModePerm)
+	fmt.Printf("dockerfile saved to %s\n", savePath)
 }
