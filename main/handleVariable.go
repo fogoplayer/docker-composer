@@ -52,13 +52,12 @@ func getUserMainMenuChoice(token Token) UserChoice {
 
 	if allowContinue {
 		defaultSelection = CONTINUE
-		continueOption = `
-	3) continue`
+		continueOption = "\n\t3) continue"
 	} else {
 		defaultSelection = REUSE
 	}
 
-	fmt.Printf(`Choose a behavior for %s (%s):
+	fmt.Printf(`Choose a behavior for {{%s}} (%s):
 	1) create a new mixin
 	2) reuse an existing mixin%s
 `, tokenName, defaultSelection, continueOption)

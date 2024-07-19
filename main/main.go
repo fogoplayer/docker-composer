@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var contentPath string = strings.Join([]string{home, ".config", "docker-composer", "mixins"}, string(os.PathSeparator))
+var contentPath string = strings.Join([]string{home, ".config", "docker-composer"}, string(os.PathSeparator))
 
 func main() {
 	dat, err := os.ReadFile("/home/zarinloosli/docker-composer/example.tplt")
@@ -15,14 +15,26 @@ func main() {
 	for i, token := range ast {
 		if token.kind == variable {
 			ast[i] = handleVariable(token)
-			fmt.Println(ast[i])
 		}
 	}
-	// fmt.Print(ast)
+
+	dockerfile := buildDockerfile(ast)
+	fmt.Println(dockerfile)
 }
 
 func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func buildDockerfile(ast []Token) string {
+	var dockerfileBuilder strings.Builder
+
+	for _, token := range ast {
+		for _, value := range token.values {
+			fmt.Fprint(&dockerfileBuilder, value)
+		}
+	}
+	return dockerfileBuilder.String()
 }
