@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type UserChoice string
@@ -18,14 +19,15 @@ const (
 func handleVariable(token Token) Token {
 tokenLoop:
 	for {
-		userChoice := getUserChoice(token)
+		userChoice := getUserMainMenuChoice(token)
+		var newValue string
 
 		switch userChoice {
 		case CREATE_NEW:
-			token.values = append(token.values, createMixin())
+			newValue = createMixin()
 
 		case "2":
-			fmt.Println(2)
+			newValue = getUserMixinChoice()
 
 		case "3":
 			break tokenLoop
@@ -33,11 +35,13 @@ tokenLoop:
 		default:
 			fmt.Println("Invalid input. Please try again")
 		}
+
+		token.values = append(token.values, newValue)
 	}
 	return token
 }
 
-func getUserChoice(token Token) UserChoice {
+func getUserMainMenuChoice(token Token) UserChoice {
 	var userChoice UserChoice
 
 	// Create prompt
@@ -71,4 +75,29 @@ func getUserChoice(token Token) UserChoice {
 	}
 
 	return userChoice
+}
+
+func getUserMixinChoice() string {
+	var userChoice string
+	defaultChoice := 1
+
+	fmt.Printf("Choose a mixin (%d):\n", defaultChoice)
+	numberToMixin := listMixins()
+
+	/* bytes, err :=  */
+	fmt.Scanln(&userChoice)
+
+	// if default
+	if userChoice == "" {
+		return getMixin(numberToMixin[defaultChoice])
+	}
+
+	// if a number
+	num, err := strconv.Atoi(userChoice)
+	if err == nil {
+		return getMixin(numberToMixin[num])
+	}
+
+	// if a full string
+	return getMixin(userChoice)
 }

@@ -55,6 +55,23 @@ func getMixinPathFromName(name string) string {
 }
 
 func getMixin(name string) string {
-	bytes, _ := os.ReadFile(getMixinPathFromName(name))
+	filePath := getMixinPathFromName(name)
+	bytes, _ := os.ReadFile(filePath)
 	return string(bytes)
+}
+
+func listMixins() map[int]string {
+	mixins, _ := os.ReadDir(mixinDirPath)
+	numberToMixin := make(map[int]string)
+
+	for i, file := range mixins {
+		i = i + 1 // 0-index to 1-index
+		filename := file.Name()
+		filename = filename[:len(filename)-5]
+
+		fmt.Println("\t", i, ")", filename)
+		numberToMixin[i] = filename
+	}
+
+	return numberToMixin
 }
