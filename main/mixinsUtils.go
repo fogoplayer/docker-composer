@@ -9,7 +9,7 @@ import (
 )
 
 var home string = os.Getenv("HOME")
-var mixinDirPath string = strings.Join([]string{home, ".config", "docker-composer"}, string(os.PathSeparator))
+var mixinDirPath string = strings.Join([]string{contentPath, "mixins"}, string(os.PathSeparator))
 
 func createMixin() string {
 	// Create temporary mixin file

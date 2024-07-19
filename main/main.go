@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
+
+var contentPath string = strings.Join([]string{home, ".config", "docker-composer", "mixins"}, string(os.PathSeparator))
 
 func main() {
 	dat, err := os.ReadFile("/home/zarinloosli/docker-composer/example.tplt")
