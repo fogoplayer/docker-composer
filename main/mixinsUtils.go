@@ -23,9 +23,8 @@ func createMixin() string {
 	openFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
-	var userSpecifiedMixinName string
 	fmt.Print("Choose a name for your mixin: ")
-	fmt.Scanln(&userSpecifiedMixinName)
+	userSpecifiedMixinName := readLineFromStdInAsString()
 
 	os.Rename(tempFilename, getMixinPathFromName(userSpecifiedMixinName))
 

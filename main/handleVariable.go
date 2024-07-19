@@ -8,10 +8,10 @@ import (
 type UserChoice string
 
 const (
-	CREATE_NEW = "1"
-	REUSE      = "2"
-	CONTINUE   = "3"
-	INVALID    = "INVALID"
+	CREATE_NEW UserChoice = "1"
+	REUSE      UserChoice = "2"
+	CONTINUE   UserChoice = "3"
+	INVALID    UserChoice = "INVALID"
 )
 
 // TODO allow template authors to provide defaults for tokens
@@ -42,7 +42,6 @@ tokenLoop:
 }
 
 func getUserMainMenuChoice(token Token) UserChoice {
-	var userChoice UserChoice
 
 	// Create prompt
 	tokenName := token.name
@@ -63,11 +62,7 @@ func getUserMainMenuChoice(token Token) UserChoice {
 `, tokenName, defaultSelection, continueOption)
 
 	// process response
-	bytes, _ := fmt.Scanf("%s", &userChoice)
-
-	if bytes < 1 {
-		userChoice = defaultSelection
-	}
+	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
 
 	if userChoice == "3" && !allowContinue {
 		userChoice = INVALID
@@ -77,19 +72,13 @@ func getUserMainMenuChoice(token Token) UserChoice {
 }
 
 func getUserMixinChoice() string {
-	var userChoice string
 	defaultChoice := 1
 
 	fmt.Printf("Choose a mixin (%d):\n", defaultChoice)
 	numberToMixin := listMixins()
 
 	/* bytes, err :=  */
-	fmt.Scanln(&userChoice)
-
-	// if default
-	if userChoice == "" {
-		return getMixin(numberToMixin[defaultChoice])
-	}
+	userChoice := readLineFromStdInAsString(string(defaultChoice))
 
 	// if a number
 	num, err := strconv.Atoi(userChoice)

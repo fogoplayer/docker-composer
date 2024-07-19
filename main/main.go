@@ -35,12 +35,8 @@ func buildDockerfile(ast []Token) string {
 }
 
 func saveDockerFile(dockerfile string) {
-	var savePath string
 	fmt.Print("Enter a path to save your dockerfile to (~/): ")
-	fmt.Scanln(&savePath)
-	if savePath == "" {
-		savePath = os.Getenv("HOME")
-	}
+	savePath := readLineFromStdInAsString(os.Getenv("HOME"))
 
 	savePath = segmentsToPath(savePath, "dockerfile")
 	writeStringToFile(dockerfile, savePath)
