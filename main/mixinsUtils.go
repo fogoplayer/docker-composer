@@ -15,7 +15,7 @@ func createMixin() string {
 
 	now := time.Now().UnixNano()
 	tempFilename := getMixinPathFromName(string(now))
-	os.WriteFile(tempFilename, []byte("# your mixin here"), os.ModePerm)
+	writeStringToFile("# your mixin here", tempFilename)
 	// TODO cleanup with defer in case of error
 
 	// edit file
@@ -53,9 +53,7 @@ func getMixinPathFromName(name string) string {
 }
 
 func getMixin(name string) string {
-	filePath := getMixinPathFromName(name)
-	bytes, _ := os.ReadFile(filePath)
-	return string(bytes)
+	return readStringFromFile(getMixinPathFromName(name))
 }
 
 func listMixins() map[int]string {

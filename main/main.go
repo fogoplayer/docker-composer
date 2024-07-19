@@ -10,9 +10,8 @@ var home string = os.Getenv("HOME")
 var contentPath string = segmentsToPath(home, ".config", "docker-composer")
 
 func main() {
-	dat, err := os.ReadFile("/home/zarinloosli/docker-composer/example.tplt")
-	check(err)
-	ast := tokenize(string(dat))
+	template := readStringFromFile("/home/zarinloosli/docker-composer/example.tplt")
+	ast := tokenize(template)
 	for i, token := range ast {
 		if token.kind == variable {
 			ast[i] = handleVariable(token)
@@ -21,12 +20,6 @@ func main() {
 
 	dockerfile := buildDockerfile(ast)
 	saveDockerFile(dockerfile)
-}
-
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
 
 func buildDockerfile(ast []Token) string {
@@ -50,6 +43,6 @@ func saveDockerFile(dockerfile string) {
 	}
 
 	savePath = segmentsToPath(savePath, "dockerfile")
-	os.WriteFile(savePath, []byte(dockerfile), os.ModePerm)
+	writeStringToFile(dockerfile, savePath)
 	fmt.Printf("dockerfile saved to %s\n", savePath)
 }
