@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-var contentPath string = strings.Join([]string{home, ".config", "docker-composer"}, string(os.PathSeparator))
+var home string = os.Getenv("HOME")
+var contentPath string = segmentsToPath(home, ".config", "docker-composer")
 
 func main() {
 	dat, err := os.ReadFile("/home/zarinloosli/docker-composer/example.tplt")
@@ -36,6 +37,7 @@ func buildDockerfile(ast []Token) string {
 			fmt.Fprint(&dockerfileBuilder, value)
 		}
 	}
+
 	return dockerfileBuilder.String()
 }
 
@@ -47,7 +49,7 @@ func saveDockerFile(dockerfile string) {
 		savePath = os.Getenv("HOME")
 	}
 
-	savePath = strings.Join([]string{savePath, "dockerfile"}, string(os.PathSeparator))
+	savePath = segmentsToPath(savePath, "dockerfile")
 	os.WriteFile(savePath, []byte(dockerfile), os.ModePerm)
 	fmt.Printf("dockerfile saved to %s\n", savePath)
 }

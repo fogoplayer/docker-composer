@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 	"time"
 )
 
-var home string = os.Getenv("HOME")
-var mixinDirPath string = strings.Join([]string{contentPath, "mixins"}, string(os.PathSeparator))
+var mixinDirPath string = segmentsToPath(contentPath, "mixins")
 
 func createMixin() string {
 	// Create temporary mixin file
@@ -51,7 +49,7 @@ func openFileInUserPreferredEditor(filename string) {
 }
 
 func getMixinPathFromName(name string) string {
-	return mixinDirPath + string(os.PathSeparator) + name + ".mxin"
+	return segmentsToPath(mixinDirPath, name+".mxin")
 }
 
 func getMixin(name string) string {
