@@ -11,13 +11,14 @@ import (
 var home string = os.Getenv("HOME")
 var mixinDirPath string = strings.Join([]string{home, ".config", "docker-composer"}, string(os.PathSeparator))
 
-func createMixin() {
+func createMixin() string {
 	// Create temporary mixin file
 	os.MkdirAll(mixinDirPath, os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
 	tempFilename := getMixinPathFromName(string(now))
-	os.WriteFile(tempFilename, []byte("your mixin here"), os.ModePerm)
+	os.WriteFile(tempFilename, []byte("# your mixin here"), os.ModePerm)
+	// TODO cleanup with defer in case of error
 
 	// edit file
 	fmt.Println("Opening mixin editor...")
@@ -29,6 +30,8 @@ func createMixin() {
 	fmt.Scanln(&userSpecifiedMixinName)
 
 	os.Rename(tempFilename, getMixinPathFromName(userSpecifiedMixinName))
+
+	return getMixin(userSpecifiedMixinName)
 }
 
 func openFileInUserPreferredEditor(filename string) {
@@ -49,4 +52,9 @@ func openFileInUserPreferredEditor(filename string) {
 
 func getMixinPathFromName(name string) string {
 	return mixinDirPath + string(os.PathSeparator) + name + ".mxin"
+}
+
+func getMixin(name string) string {
+	bytes, _ := os.ReadFile(getMixinPathFromName(name))
+	return string(bytes)
 }
