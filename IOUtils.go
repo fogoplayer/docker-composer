@@ -92,7 +92,7 @@ func printSelectionList(choices []UserChoice) {
 	}
 }
 
-func getUserSelection(message string, numberToOption []UserChoice, defaultValue ...UserChoice) UserChoice {
+func getUserSelection(message string, numberToOption []UserChoice, defaultValue ...UserChoice) UserChoice { // TODO support number, full text, or a "short code" (one word)
 	if len(defaultValue) == 0 {
 		defaultValue = []UserChoice{"1"}
 	}
