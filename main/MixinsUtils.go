@@ -52,7 +52,10 @@ func getMixinContents(name UserChoice) (string, error) {
 }
 
 func getListOfMixins() map[int]UserChoice {
-	mixins, _ := os.ReadDir(string(mixinDirPath))
+	mixins, err := os.ReadDir(string(mixinDirPath))
+	if err == nil {
+		panic(err)
+	}
 	numberToMixin := make(map[int]UserChoice)
 
 	for i, file := range mixins {
