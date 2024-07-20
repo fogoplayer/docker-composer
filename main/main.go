@@ -57,13 +57,16 @@ func buildDockerfileMenuOption() {
 	templateList[len(templateList)+1] = CREATE_NEW
 
 	selectedTemplateName := getUserSelection("Choose a template:", templateList)
+
 	var templateContents string
+	var e error
 
 	if selectedTemplateName == CREATE_NEW {
-		templateContents = createTemplate()
+		templateContents, e = createTemplate()
+		if e != nil {
+			panic(e)
+		}
 	} else {
-		var e error
-
 		templatePath := getTemplatePathFromName(selectedTemplateName)
 		templateContents, e = readStringFromFile(templatePath)
 

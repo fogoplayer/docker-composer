@@ -11,7 +11,7 @@ var templateDirPath = segmentsToPath(string(contentPath), "templates")
 // Creates a new template
 //
 // Opens the user's preferred text editor, lets them add template contents, select a name, and save
-func createTemplate() string {
+func createTemplate() (string, error) {
 	// Create temporary template file
 	os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
 
@@ -40,16 +40,19 @@ func getTemplatePathFromName(name UserChoice) Path {
 }
 
 // Takes in a template name and returns the contents
-func getTemplateContents(name UserChoice) string {
+func getTemplateContents(name UserChoice) (string, error) {
 	path := getTemplatePathFromName(name)
-	template, _ := readStringFromFile(path)
-	return template
+	return readStringFromFile(path)
+
 }
 
 // Returns a map of numerical indexes to names of all created templates
 func getListOfTemplates() map[int]UserChoice {
 	createBlankTemplateIfDoesNotExist()
-	templates, _ := os.ReadDir(string(templateDirPath))
+	templates, e := os.ReadDir(string(templateDirPath))
+	if e != nil {
+		panic(e)
+	}
 	numberToTemplate := make(map[int]UserChoice)
 
 	for i, file := range templates {
@@ -62,13 +65,19 @@ func getListOfTemplates() map[int]UserChoice {
 }
 
 // Checks if the `blank` template exists. If not, creates one using a default template hard-coded into the source code.
-func createBlankTemplateIfDoesNotExist() {
-	existing := getTemplateContents("blank")
-	if existing == "" {
-		os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
-		path := getTemplatePathFromName("blank")
-		writeStringToFile(blankTemplate, path)
+func createBlankTemplateIfDoesNotExist() error {
+	_, err := getTemplateContents("blank")
+	if err == nil {
+		return nil
 	}
+
+	if errorIsNotThatFileExists(err) {
+		panic(err)
+	}
+
+	createDirectoryIfDoesNotExist(templateDirPath)
+	path := getTemplatePathFromName("blank")
+	return writeStringToFile(blankTemplate, path)
 }
 
 var blankTemplate string = `FROM {{base_image}}
