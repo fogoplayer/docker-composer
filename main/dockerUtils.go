@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func buildDockerfile(ast []Token) string {
+func buildDockerfileFromAst(ast []Token) string {
 	var dockerfileBuilder strings.Builder
 
 	for _, token := range ast {
