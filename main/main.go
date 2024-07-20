@@ -18,29 +18,31 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
-	os.Args = []string{"mixin", "create", "testing"}
-	handleCLArgs(os.Args)
+	userChoice, remainingArgs := handleCLArgs(os.Args)
+	cliMode := userChoice != ""
 
 	for {
-		userChoice := getUserSelection(
-			"What would you like to do?:",
-			[]UserChoice{
-				BUILD_DOCKERFILE,
-				MANAGE_TEMPLATES,
-				MANAGE_MIXINS,
-				EXIT,
-			},
-		)
+		if userChoice == INVALID {
+			userChoice = getUserSelection(
+				"What would you like to do?:",
+				[]UserChoice{
+					BUILD_DOCKERFILE,
+					MANAGE_TEMPLATES,
+					MANAGE_MIXINS,
+					EXIT,
+				},
+			)
+		}
 
 		switch userChoice {
 		case BUILD_DOCKERFILE:
-			buildDockerfileMenuOption()
+			buildDockerfileMenuOption(remainingArgs...)
 
 		case MANAGE_TEMPLATES:
-			manageTemplatesMenuOption()
+			manageTemplatesMenuOption(remainingArgs...)
 
 		case MANAGE_MIXINS:
-			manageMixinsMenuOption()
+			manageMixinsMenuOption(remainingArgs...)
 
 		case EXIT:
 			os.Exit(0)
@@ -48,6 +50,13 @@ func main() {
 		default:
 			fmt.Println("Invalid input. Please try again")
 			continue
+		}
+
+		if cliMode {
+			os.Exit(0)
+		} else {
+			userChoice = INVALID
+			remainingArgs = []string{}
 		}
 	}
 }
@@ -277,25 +286,25 @@ selectTemplateLoop:
 }
 
 // parses command-line arguments
-func handleCLArgs(args []string) {
-	if len(args) == 0 {
-		return
+func handleCLArgs(args []string) (UserChoice, []string) {
+	workingDirectory = Path(args[0])
+	args = args[1:]
+
+	if len(args) == 1 {
+		return INVALID, []string{}
 	}
 
 	switch args[0] {
 	case "dockerfile":
-		buildDockerfileMenuOption(args[1:]...)
-		os.Exit(0)
+		return BUILD_DOCKERFILE, args[1:]
 
 	case "template":
-		manageTemplatesMenuOption(args[1:]...)
-		os.Exit(0)
+		return MANAGE_TEMPLATES, args[1:]
 
 	case "mixin":
-		manageMixinsMenuOption(args[1:]...)
-		os.Exit(0)
+		return MANAGE_MIXINS, args[1:]
 
 	default:
-		fmt.Println("Unrecognized parameter", args[0])
+		return INVALID, []string{}
 	}
 }

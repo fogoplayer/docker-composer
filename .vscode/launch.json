@@ -10,7 +10,8 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/main",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "args": ["dockerfile", "menu", "# test"]
     }
   ]
 }

@@ -12,6 +12,8 @@ import (
 
 type Path string
 
+var workingDirectory Path
+
 //////////////
 // File I/O //
 //////////////

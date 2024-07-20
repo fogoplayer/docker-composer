@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -20,9 +19,9 @@ func buildDockerfileFromAst(ast []Token) string {
 
 func saveDockerFile(dockerfile string) {
 	for {
-		fmt.Print("Enter a directory to save your dockerfile to (~/): ")
+		fmt.Print("Enter a directory to save your dockerfile to (./): ")
 		savePath := segmentsToPath(string(
-			readLineFromStdInAsString(UserChoice(os.Getenv("HOME"))),
+			readLineFromStdInAsString(UserChoice(workingDirectory)),
 		))
 		// make sure directory exists
 		if !fileExists(savePath) {
