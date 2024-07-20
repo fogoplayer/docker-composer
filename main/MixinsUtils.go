@@ -39,7 +39,7 @@ func getMixinPathFromName(name UserChoice) (Path, error) {
 
 func getMixinContents(name UserChoice) (string, error) {
 	path, err := getMixinPathFromName(name)
-	if err != nil {
+	if errorIsNotThatFileExists(err) {
 		return "", err
 	}
 	return readStringFromFile(path)

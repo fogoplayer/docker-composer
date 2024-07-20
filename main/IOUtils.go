@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -58,8 +59,12 @@ func createDirectoryIfDoesNotExist(path Path) error {
 }
 
 func fileExists(path Path) bool {
-	_, err := os.Stat("/path/to/whatever")
+	_, err := os.Stat(string(path))
 	return err == nil
+}
+
+func errorIsNotThatFileExists(e error) bool {
+	return e == nil || errors.Is(e, os.ErrNotExist)
 }
 
 ///////////////////
