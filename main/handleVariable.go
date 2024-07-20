@@ -74,11 +74,11 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 
 	return getUserSelection(
 		"Options for populating {{"+tokenName+"}}",
-		createOptionMap(
+		[]UserChoice{
 			CREATE_NEW,
 			REUSE,
 			moveOnString,
-		),
+		},
 		defaultChoice,
 	)
 }

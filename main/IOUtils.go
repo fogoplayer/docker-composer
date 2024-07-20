@@ -76,14 +76,14 @@ func readLineFromStdInAsString(defaultValue ...UserChoice) UserChoice {
 	}
 }
 
-func printSelectionList(mapObj map[int]UserChoice) {
-	for i := 1; i <= len(mapObj); i++ {
-		val := mapObj[i]
-		fmt.Println("  "+strconv.Itoa(i)+")", val)
+func printSelectionList(choices []UserChoice) {
+	for i := 0; i < len(choices); i++ {
+		val := choices[i]
+		fmt.Println("  "+strconv.Itoa(i+1)+")", val)
 	}
 }
 
-func getUserSelection(message string, numberToOption map[int]UserChoice, defaultValue ...UserChoice) UserChoice {
+func getUserSelection(message string, numberToOption []UserChoice, defaultValue ...UserChoice) UserChoice {
 	if len(defaultValue) == 0 {
 		defaultValue = []UserChoice{"1"}
 	}

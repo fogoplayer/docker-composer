@@ -20,12 +20,12 @@ func main() {
 	for {
 		userChoice := getUserSelection(
 			"What would you like to do?:",
-			createOptionMap(
+			[]UserChoice{
 				BUILD_DOCKERFILE,
 				MANAGE_TEMPLATES,
 				MANAGE_MIXINS,
 				EXIT,
-			),
+			},
 		)
 
 		switch userChoice {
@@ -98,7 +98,7 @@ manageTemplateLoop:
 	for {
 		selectedAction := getUserSelection(
 			"What action would you like to perform?",
-			createOptionMap(CREATE_NEW, EDIT, DELETE),
+			[]UserChoice{CREATE_NEW, EDIT, DELETE},
 			"2",
 		)
 
@@ -142,7 +142,7 @@ manageMixinLoop:
 	for {
 		selectedAction := getUserSelection(
 			"What action would you like to perform?",
-			createOptionMap(CREATE_NEW, EDIT, DELETE),
+			[]UserChoice{CREATE_NEW, EDIT, DELETE},
 			"2",
 		)
 
@@ -172,14 +172,4 @@ manageMixinLoop:
 			continue manageMixinLoop
 		}
 	}
-}
-
-// Takes in a list of possible choices and returns a map of numerical indexes to choices
-// TODO that's called a list... so just return a list
-func createOptionMap(options ...UserChoice) map[int]UserChoice {
-	numberToOption := make(map[int]UserChoice)
-	for i, option := range options {
-		numberToOption[i+1 /* 0-index to 1-index */] = option
-	}
-	return numberToOption
 }

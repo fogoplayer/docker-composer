@@ -47,21 +47,20 @@ func getTemplateContents(name UserChoice) (string, error) {
 }
 
 // Returns a map of numerical indexes to names of all created templates
-func getListOfTemplates() map[int]UserChoice {
+func getListOfTemplates() []UserChoice {
 	createBlankTemplateIfDoesNotExist()
 	templates, e := os.ReadDir(string(templateDirPath))
 	if e != nil {
 		panic(e)
 	}
-	numberToTemplate := make(map[int]UserChoice)
+	templateList := []UserChoice{}
 
-	for i, file := range templates {
-		i = i + 1 // 0-index to 1-index
+	for _, file := range templates {
 		filename := file.Name()
-		numberToTemplate[i] = UserChoice(filename)
+		templateList = append(templateList, UserChoice(filename))
 	}
 
-	return numberToTemplate
+	return templateList
 }
 
 // Checks if the `blank` template exists. If not, creates one using a default template hard-coded into the source code.

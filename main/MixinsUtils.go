@@ -57,17 +57,16 @@ func getMixinContents(name UserChoice) (string, error) {
 	return "", os.ErrNotExist
 }
 
-func getListOfMixins() map[int]UserChoice {
+func getListOfMixins() []UserChoice {
 	mixins, e := os.ReadDir(string(mixinDirPath))
 	if e != nil {
 		panic(e)
 	}
-	numberToMixin := make(map[int]UserChoice)
+	numberToMixin := []UserChoice{}
 
-	for i, file := range mixins {
-		i = i + 1 // 0-index to 1-index
+	for _, file := range mixins {
 		filename := file.Name()
-		numberToMixin[i] = UserChoice(filename)
+		numberToMixin = append(numberToMixin, UserChoice(filename))
 	}
 
 	return numberToMixin
