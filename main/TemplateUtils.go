@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var templateDirPath, _ = segmentsToPath(string(contentPath), "templates")
+var templateDirPath = segmentsToPath(string(contentPath), "templates")
 
 // Creates a new template
 //
@@ -16,7 +16,7 @@ func createTemplate() string {
 	os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
-	tempFilename, _ := getTemplatePathFromName(UserChoice(now))
+	tempFilename := getTemplatePathFromName(UserChoice(now))
 	writeStringToFile("# your template here", tempFilename)
 	// TODO cleanup with defer in case of error
 
@@ -28,20 +28,20 @@ func createTemplate() string {
 	fmt.Print("Choose a name for your template: ")
 	userSpecifiedTemplateName := readLineFromStdInAsString()
 
-	path, _ := getTemplatePathFromName(userSpecifiedTemplateName)
+	path := getTemplatePathFromName(userSpecifiedTemplateName)
 	os.Rename(string(tempFilename), string(path))
 
 	return getTemplateContents(userSpecifiedTemplateName)
 }
 
 // Takes in a template name and returns the path
-func getTemplatePathFromName(name UserChoice) (Path, error) {
+func getTemplatePathFromName(name UserChoice) Path {
 	return segmentsToPath(string(templateDirPath), string(name))
 }
 
 // Takes in a template name and returns the contents
 func getTemplateContents(name UserChoice) string {
-	path, _ := getTemplatePathFromName(name)
+	path := getTemplatePathFromName(name)
 	template, _ := readStringFromFile(path)
 	return template
 }
@@ -66,7 +66,7 @@ func createBlankTemplateIfDoesNotExist() {
 	existing := getTemplateContents("blank")
 	if existing == "" {
 		os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
-		path, _ := getTemplatePathFromName("blank")
+		path := getTemplatePathFromName("blank")
 		writeStringToFile(blankTemplate, path)
 	}
 }

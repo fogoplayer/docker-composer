@@ -13,7 +13,7 @@ const (
 )
 
 var home string = os.Getenv("HOME")
-var contentPath, _ = segmentsToPath(home, ".config", "docker-composer")
+var contentPath = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
@@ -62,7 +62,7 @@ func buildDockerfileMenuOption() {
 	if selectedTemplateName == CREATE_NEW {
 		templateContents = createTemplate()
 	} else {
-		templatePath, _ := getTemplatePathFromName(selectedTemplateName)
+		templatePath := getTemplatePathFromName(selectedTemplateName)
 		templateContents, _ = readStringFromFile(templatePath)
 	}
 
@@ -105,12 +105,12 @@ manageTemplateLoop:
 
 		switch selectedAction {
 		case EDIT:
-			templatePath, _ := getTemplatePathFromName(selectedTemplate)
+			templatePath := getTemplatePathFromName(selectedTemplate)
 			editFileInUserPreferredEditor(templatePath)
 			break manageTemplateLoop
 
 		case DELETE:
-			templatePath, _ := getTemplatePathFromName(selectedTemplate)
+			templatePath := getTemplatePathFromName(selectedTemplate)
 			deleteFile(templatePath)
 			break manageTemplateLoop
 
@@ -138,7 +138,7 @@ manageMixinLoop:
 		)
 
 		if selectedAction == CREATE_NEW {
-			createTemplate()
+			createMixin()
 			break manageMixinLoop
 		}
 
@@ -149,12 +149,12 @@ manageMixinLoop:
 
 		switch selectedAction {
 		case EDIT:
-			mixinPath, _ := getMixinPathFromName(selectedMixin)
+			mixinPath := getMixinPathFromName(selectedMixin)
 			editFileInUserPreferredEditor(mixinPath)
 			break manageMixinLoop
 
 		case DELETE:
-			mixinPath, _ := getMixinPathFromName(selectedMixin)
+			mixinPath := getMixinPathFromName(selectedMixin)
 			deleteFile(mixinPath)
 			break manageMixinLoop
 

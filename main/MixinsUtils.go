@@ -6,43 +6,49 @@ import (
 	"time"
 )
 
-var mixinDirPath, _ = segmentsToPath(string(contentPath), "mixins")
+var mixinDirPath = segmentsToPath(string(contentPath), "mixins")
 
 func createMixin() (string, error) {
 	createDirectoryIfDoesNotExist(mixinDirPath)
 
 	now := time.Now().UnixNano()
-	tempFilename, _ := getMixinPathFromName(UserChoice(now))
+	tempFilename := getMixinPathFromName(UserChoice(now))
 	writeStringToFile("# your mixin here", tempFilename)
-	// TODO cleanup with defer in case of error
+	defer os.Remove(string(tempFilename))
 
 	// edit file
 	fmt.Println("Opening mixin editor...")
 	editFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
-	fmt.Print("Choose a name for your mixin: ")
-	userSpecifiedMixinName := readLineFromStdInAsString()
+	for {
+		fmt.Print("Choose a name for your mixin: ")
+		userSpecifiedMixinName := readLineFromStdInAsString()
 
-	path, err := getMixinPathFromName(userSpecifiedMixinName)
-	if err != nil {
-		return "", err
+		newPath := getMixinPathFromName(userSpecifiedMixinName)
+
+		// if name already in use, try again
+		if fileExists(newPath) {
+			fmt.Println("That name is already in use")
+			continue
+		}
+
+		// if path good, proceed
+		os.Rename(string(tempFilename), string(newPath))
+		return getMixinContents(userSpecifiedMixinName)
 	}
-	os.Rename(string(tempFilename), string(path))
-
-	return getMixinContents(userSpecifiedMixinName)
 }
 
-func getMixinPathFromName(name UserChoice) (Path, error) {
+func getMixinPathFromName(name UserChoice) Path {
 	return segmentsToPath(string(mixinDirPath), string(name))
 }
 
 func getMixinContents(name UserChoice) (string, error) {
-	path, err := getMixinPathFromName(name)
-	if errorIsNotThatFileExists(err) {
-		return "", err
+	path := getMixinPathFromName(name)
+	if fileExists(path) {
+		return readStringFromFile(path)
 	}
-	return readStringFromFile(path)
+	return "", os.ErrNotExist
 }
 
 func getListOfMixins() map[int]UserChoice {

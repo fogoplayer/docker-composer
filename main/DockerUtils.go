@@ -19,10 +19,21 @@ func buildDockerfileFromAst(ast []Token) string {
 }
 
 func saveDockerFile(dockerfile string) {
-	fmt.Print("Enter a path to save your dockerfile to (~/): ")
-	savePath := Path(readLineFromStdInAsString(UserChoice(os.Getenv("HOME"))))
+	for {
+		fmt.Print("Enter a directory to save your dockerfile to (~/): ")
+		savePath := segmentsToPath(string(
+			readLineFromStdInAsString(UserChoice(os.Getenv("HOME"))),
+		))
+		// make sure directory exists
+		if !fileExists(savePath) {
+			fmt.Println("There is an issue with that directory. Please try again.")
+			continue
+		}
 
-	savePath, _ = segmentsToPath(string(savePath), "dockerfile")
-	writeStringToFile(dockerfile, savePath)
-	fmt.Printf("dockerfile saved to %s\n", savePath)
+		savePath = segmentsToPath(string(savePath), "dockerfile")
+		writeStringToFile(dockerfile, savePath)
+
+		fmt.Printf("dockerfile saved to %s\n", savePath)
+		break
+	}
 }

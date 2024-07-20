@@ -15,13 +15,8 @@ type Path string
 // File I/O //
 //////////////
 
-func segmentsToPath(segments ...string) (Path, error) {
-	path := Path(strings.Join(segments, string(os.PathSeparator)))
-	if fileExists(path) {
-		return path, nil
-	} else {
-		return path, os.ErrNotExist
-	}
+func segmentsToPath(segments ...string) Path {
+	return Path(strings.Join(segments, string(os.PathSeparator)))
 }
 
 func writeStringToFile(data string, path Path) {
@@ -64,7 +59,7 @@ func fileExists(path Path) bool {
 }
 
 func errorIsNotThatFileExists(e error) bool {
-	return e == nil || errors.Is(e, os.ErrNotExist)
+	return e == nil || !errors.Is(e, os.ErrExist) || errors.Is(e, os.ErrNotExist)
 }
 
 ///////////////////
