@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -67,10 +68,14 @@ func errorIsNotThatFileExists(e error) bool {
 ///////////////////
 
 func readLineFromStdInAsString(defaultValue ...UserChoice) UserChoice {
-	var userInput UserChoice
-	fmt.Scanln(&userInput)
+	stdin := bufio.NewReader(os.Stdin)
+	userInput, e := stdin.ReadString('\n') // read until newline
+	if e != nil {
+		panic(e)
+	}
+
 	if len(userInput) > 0 || len(defaultValue) < 1 {
-		return userInput
+		return UserChoice(userInput)
 	} else {
 		return defaultValue[0]
 	}
@@ -92,6 +97,7 @@ func getUserSelection(message string, numberToOption []UserChoice, defaultValue 
 	printSelectionList(numberToOption)
 	fmt.Printf("Choose an option (%s): ", defaultValue[0])
 	userChoice := readLineFromStdInAsString(defaultValue[0])
+	userChoice = UserChoice(strings.Replace(string(userChoice), "\n", "", -1))
 
 	// if default
 	if userChoice == "" {
