@@ -19,7 +19,7 @@ func segmentsToPath(segments ...string) (Path, error) {
 	if fileExists(path) {
 		return path, nil
 	} else {
-		return "", os.ErrNotExist
+		return path, os.ErrNotExist
 	}
 }
 

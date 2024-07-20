@@ -18,7 +18,15 @@ var contentPath, _ = segmentsToPath(home, ".config", "docker-composer")
 // Entry point for docker-composer
 func main() {
 	for {
-		userChoice := getUserMainMenuChoice()
+		userChoice := getUserSelection(
+			"What would you like to do?:",
+			createOptionMap(
+				BUILD_DOCKERFILE,
+				MANAGE_TEMPLATES,
+				MANAGE_MIXINS,
+				EXIT,
+			),
+		)
 
 		switch userChoice {
 		case BUILD_DOCKERFILE:
@@ -40,27 +48,25 @@ func main() {
 	}
 }
 
-// Initial prompt when the user opens the application
-func getUserMainMenuChoice() UserChoice {
-	userChoice := getUserSelection(
-		"What would you like to do?:",
-		createOptionMap(
-			BUILD_DOCKERFILE,
-			MANAGE_TEMPLATES,
-			MANAGE_MIXINS,
-			EXIT,
-		),
-	)
-
-	return userChoice
-}
-
 // Code to execute if the user chooses to build a dockerfile.
 //
 // Reads in a template, tokenizes it, replaces variables, and saves to a directory of the user's choice
 func buildDockerfileMenuOption() {
-	template, _ := readStringFromFile("/home/zarinloosli/docker-composer/example.tplt")
-	ast := tokenize(template)
+	const CREATE_NEW = "create a new template"
+	templateList := getListOfTemplates()
+	templateList[len(templateList)+1] = CREATE_NEW
+
+	selectedTemplateName := getUserSelection("Choose a template:", templateList)
+	var templateContents string
+
+	if selectedTemplateName == CREATE_NEW {
+		templateContents = createTemplate()
+	} else {
+		templatePath, _ := getTemplatePathFromName(selectedTemplateName)
+		templateContents, _ = readStringFromFile(templatePath)
+	}
+
+	ast := tokenize(templateContents)
 	for i, token := range ast {
 		if token.kind == VARIABLE {
 			ast[i] = handleVariable(token)
@@ -122,6 +128,7 @@ func manageMixinsMenuOption() {
 		EDIT       UserChoice = "edit a mixin"
 		DELETE     UserChoice = "delete a mixin"
 	)
+
 manageMixinLoop:
 	for {
 		selectedAction := getUserSelection(
@@ -132,7 +139,7 @@ manageMixinLoop:
 
 		if selectedAction == CREATE_NEW {
 			createTemplate()
-			break
+			break manageMixinLoop
 		}
 
 		selectedMixin := getUserSelection(
@@ -153,7 +160,7 @@ manageMixinLoop:
 
 		default:
 			fmt.Println("Invalid input. Please try again")
-			continue
+			continue manageMixinLoop
 		}
 	}
 }
