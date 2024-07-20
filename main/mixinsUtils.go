@@ -19,7 +19,7 @@ func createMixin() (string, error) {
 
 	// edit file
 	fmt.Println("Opening mixin editor...")
-	openFileInUserPreferredEditor(tempFilename)
+	editFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
 	fmt.Print("Choose a name for your mixin: ")

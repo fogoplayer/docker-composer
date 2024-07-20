@@ -8,19 +8,45 @@ import (
 	"strings"
 )
 
-func segmentsToPath(segments ...string) string {
-	return strings.Join(segments, string(os.PathSeparator))
+type Path string
+
+//////////////
+// File I/O //
+//////////////
+
+func segmentsToPath(segments ...string) Path {
+	return Path(strings.Join(segments, string(os.PathSeparator)))
 }
 
-func readStringFromFile(path string) (string, error) {
-	data, err := os.ReadFile(path)
+func readStringFromFile(path Path) (string, error) {
+	data, err := os.ReadFile(string(path))
 
 	return string(data), err
 }
 
-func writeStringToFile(data string, path string) {
-	os.WriteFile(path, []byte(data), os.ModePerm)
+func writeStringToFile(data string, path Path) {
+	os.WriteFile(string(path), []byte(data), os.ModePerm)
 }
+
+func editFileInUserPreferredEditor(filename Path) {
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		editor = os.Getenv("VISUAL")
+	}
+	if editor == "" {
+		editor = "/usr/bin/editor"
+	}
+
+	editorProcess := exec.Command(editor, string(filename))
+	editorProcess.Stdin = os.Stdin
+	editorProcess.Stdout = os.Stdout
+	editorProcess.Stderr = os.Stderr
+	editorProcess.Run()
+}
+
+///////////////////
+// STDIN/OUT I/O //
+///////////////////
 
 func readLineFromStdInAsString(defaultValue ...UserChoice) UserChoice {
 	var userInput UserChoice
@@ -32,35 +58,11 @@ func readLineFromStdInAsString(defaultValue ...UserChoice) UserChoice {
 	}
 }
 
-func openFileInUserPreferredEditor(filename string) {
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		editor = os.Getenv("VISUAL")
-	}
-	if editor == "" {
-		editor = "/usr/bin/editor"
-	}
-
-	editorProcess := exec.Command(editor, filename)
-	editorProcess.Stdin = os.Stdin
-	editorProcess.Stdout = os.Stdout
-	editorProcess.Stderr = os.Stderr
-	editorProcess.Run()
-}
-
 func printSelectionList(mapObj map[int]UserChoice) {
 	for i := 1; i <= len(mapObj); i++ {
 		val := mapObj[i]
 		fmt.Println("  "+strconv.Itoa(i)+")", val)
 	}
-}
-
-func createOptionMap(options ...UserChoice) map[int]UserChoice {
-	numberToOption := make(map[int]UserChoice)
-	for i, option := range options {
-		numberToOption[i+1 /* 0-index to 1-index */] = option
-	}
-	return numberToOption
 }
 
 func getUserSelection(message string, numberToOption map[int]UserChoice, defaultValue ...UserChoice) UserChoice {

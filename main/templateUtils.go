@@ -22,7 +22,7 @@ func createTemplate() string {
 
 	// edit file
 	fmt.Println("Opening template editor...")
-	openFileInUserPreferredEditor(tempFilename)
+	editFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
 	fmt.Print("Choose a name for your template: ")

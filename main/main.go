@@ -86,3 +86,12 @@ func manageMixinsMenuOption() {
 		getListOfTemplates(),
 	)
 }
+
+// Takes in a list of possible choices and returns a map of numerical indexes to choices
+func createOptionMap(options ...UserChoice) map[int]UserChoice {
+	numberToOption := make(map[int]UserChoice)
+	for i, option := range options {
+		numberToOption[i+1 /* 0-index to 1-index */] = option
+	}
+	return numberToOption
+}
