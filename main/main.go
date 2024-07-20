@@ -62,8 +62,14 @@ func buildDockerfileMenuOption() {
 	if selectedTemplateName == CREATE_NEW {
 		templateContents = createTemplate()
 	} else {
+		var e error
+
 		templatePath := getTemplatePathFromName(selectedTemplateName)
-		templateContents, _ = readStringFromFile(templatePath)
+		templateContents, e = readStringFromFile(templatePath)
+
+		if e != nil {
+			panic(e)
+		}
 	}
 
 	ast := tokenize(templateContents)
