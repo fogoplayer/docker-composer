@@ -59,10 +59,13 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 	tokenName := token.name
 
 	var moveOnString UserChoice
+	var defaultChoice UserChoice
 	if len(token.values) > 0 {
 		moveOnString = CONTINUE
+		defaultChoice = "3"
 	} else {
 		moveOnString = SKIP
+		defaultChoice = "2"
 	}
 
 	return getUserSelection(
@@ -72,6 +75,6 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 			REUSE,
 			moveOnString,
 		),
-		"2",
+		defaultChoice,
 	)
 }

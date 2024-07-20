@@ -82,8 +82,8 @@ func manageTemplatesMenuOption() {
 // Code to execute if the user chooses to manage mixins
 func manageMixinsMenuOption() {
 	getUserSelection(
-		"Choose a template:",
-		getListOfTemplates(),
+		"Choose a mixin:",
+		getListOfMixins(),
 	)
 }
 
