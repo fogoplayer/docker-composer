@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
 type UserChoice string
@@ -28,22 +27,8 @@ tokenLoop:
 			newValue, _ = createMixin()
 
 		case REUSE:
-			userMixinChoice := getUserMixinChoice()
-			numberToMixin := getListOfMixins()
+			userMixinChoice := getUserSelection("Choose a saved mixin:", getListOfMixins(), "1")
 
-			// if a number
-			num, err := strconv.Atoi(string(userMixinChoice))
-			if err == nil {
-				mixin, err := getMixin(numberToMixin[num])
-				if err != nil {
-					fmt.Println("Unable to retrieve mixin. Please try again.")
-					break
-				}
-				newValue = mixin
-				break
-			}
-
-			// if a full string
 			mixin, err := getMixin(userMixinChoice)
 			if err != nil {
 				fmt.Println("Unable to retrieve mixin. Please try again.")
@@ -58,6 +43,7 @@ tokenLoop:
 
 		default:
 			fmt.Println("Invalid input. Please try again")
+			continue
 		}
 
 		token.values = append(token.values, newValue)
@@ -81,15 +67,4 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 		REUSE,
 		moveOnString,
 	), "2")
-}
-
-func getUserMixinChoice() UserChoice {
-	defaultChoice := UserChoice("1")
-
-	fmt.Println("Saved mixins:")
-	printSelectionList(getListOfMixins())
-
-	fmt.Printf("Which would you like to choose? (%d): ", defaultChoice)
-
-	return readLineFromStdInAsString(defaultChoice)
 }
