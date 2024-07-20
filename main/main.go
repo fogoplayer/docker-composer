@@ -18,7 +18,7 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
-	os.Args = []string{"template", "delete", "testing\n"}
+	os.Args = []string{"mixin", "create", "testing"}
 	handleCLArgs(os.Args)
 
 	for {
@@ -196,45 +196,82 @@ selectTemplateLoop:
 }
 
 // Code to execute if the user chooses to manage mixins
-func manageMixinsMenuOption() {
+func manageMixinsMenuOption(args ...string) {
 	const (
 		CREATE_NEW UserChoice = "create new mixin"
 		EDIT       UserChoice = "edit a mixin"
 		DELETE     UserChoice = "delete a mixin"
+		INVALID    UserChoice = "invalid"
 	)
 
-manageMixinLoop:
+	var selectedAction UserChoice = INVALID
+	var selectedMixin UserChoice = INVALID
+
+	if len(args) > 0 {
+		switch args[0] {
+		case "create":
+			selectedAction = CREATE_NEW
+		case "edit":
+			selectedAction = EDIT
+		case "delete":
+			selectedAction = DELETE
+		}
+		args = args[1:]
+	}
+
+	if len(args) > 0 {
+		selectedMixin = UserChoice(args[0])
+	}
+
+selectActionLoop:
 	for {
-		selectedAction := getUserSelection(
-			"What action would you like to perform?",
-			[]UserChoice{CREATE_NEW, EDIT, DELETE},
-			"2",
-		)
+		if selectedAction == INVALID {
+			selectedAction = getUserSelection(
+				"What action would you like to perform?",
+				[]UserChoice{CREATE_NEW, EDIT, DELETE},
+				"2",
+			)
+		}
 
 		if selectedAction == CREATE_NEW {
 			createMixin()
-			break manageMixinLoop
+			return
 		}
 
-		selectedMixin := getUserSelection(
-			"Choose a mixin:",
-			getListOfMixins(),
-		)
+		if selectedAction != CREATE_NEW && selectedAction != EDIT && selectedAction != DELETE {
+			fmt.Println("Invalid input. Please try again")
+			selectedAction = INVALID
+			selectedMixin = INVALID
+			continue selectActionLoop
+		}
+		break selectActionLoop
+	}
+
+selectTemplateLoop:
+	for {
+		if selectedMixin == INVALID {
+			selectedMixin = getUserSelection(
+				"Choose a mixin:",
+				getListOfMixins(),
+			)
+		}
 
 		switch selectedAction {
 		case EDIT:
 			mixinPath := getMixinPathFromName(selectedMixin)
 			editFileInUserPreferredEditor(mixinPath)
-			break manageMixinLoop
+			break selectTemplateLoop
 
 		case DELETE:
 			mixinPath := getMixinPathFromName(selectedMixin)
 			deleteFile(mixinPath)
-			break manageMixinLoop
+			break selectTemplateLoop
 
 		default:
 			fmt.Println("Invalid input. Please try again")
-			continue manageMixinLoop
+			selectedAction = INVALID
+			selectedMixin = INVALID
+			continue selectTemplateLoop
 		}
 	}
 }
@@ -255,10 +292,10 @@ func handleCLArgs(args []string) {
 		os.Exit(0)
 
 	case "mixin":
-		manageMixinsMenuOption()
+		manageMixinsMenuOption(args[1:]...)
 		os.Exit(0)
 
 	default:
-		fmt.Println("Unrecognized parameter")
+		fmt.Println("Unrecognized parameter", args[0])
 	}
 }
