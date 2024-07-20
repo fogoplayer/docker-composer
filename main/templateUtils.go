@@ -27,14 +27,14 @@ func createTemplate() string {
 
 	os.Rename(tempFilename, getTemplatePathFromName(userSpecifiedTemplateName))
 
-	return getTemplate(userSpecifiedTemplateName)
+	return getTemplateContents(userSpecifiedTemplateName)
 }
 
 func getTemplatePathFromName(name UserChoice) string {
 	return segmentsToPath(templateDirPath, string(name))
 }
 
-func getTemplate(name UserChoice) string {
+func getTemplateContents(name UserChoice) string {
 	template, _ := readStringFromFile(getTemplatePathFromName(name))
 	return template
 }
@@ -54,7 +54,7 @@ func getListOfTemplates() map[int]UserChoice {
 }
 
 func createBlankTemplateIfDoesNotExist() {
-	existing := getTemplate("blank")
+	existing := getTemplateContents("blank")
 	if existing == "" {
 		os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
 		writeStringToFile(blankTemplate, getTemplatePathFromName("blank"))

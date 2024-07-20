@@ -27,14 +27,14 @@ func createMixin() (string, error) {
 
 	os.Rename(tempFilename, getMixinPathFromName(userSpecifiedMixinName))
 
-	return getMixin(userSpecifiedMixinName)
+	return getMixinContents(userSpecifiedMixinName)
 }
 
 func getMixinPathFromName(name UserChoice) string {
 	return segmentsToPath(mixinDirPath, string(name)+".mxin")
 }
 
-func getMixin(name UserChoice) (string, error) {
+func getMixinContents(name UserChoice) (string, error) {
 	return readStringFromFile(getMixinPathFromName(name))
 }
 
