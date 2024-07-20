@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-var templateDirPath string = segmentsToPath(contentPath, "templates")
+var templateDirPath Path = segmentsToPath(string(contentPath), "templates")
 
 // Creates a new template
 //
 // Opens the user's preferred text editor, lets them add template contents, select a name, and save
 func createTemplate() string {
 	// Create temporary template file
-	os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
+	os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
 	tempFilename := getTemplatePathFromName(UserChoice(now))
@@ -28,14 +28,14 @@ func createTemplate() string {
 	fmt.Print("Choose a name for your template: ")
 	userSpecifiedTemplateName := readLineFromStdInAsString()
 
-	os.Rename(tempFilename, getTemplatePathFromName(userSpecifiedTemplateName))
+	os.Rename(string(tempFilename), string(getTemplatePathFromName(userSpecifiedTemplateName)))
 
 	return getTemplateContents(userSpecifiedTemplateName)
 }
 
 // Takes in a template name and returns the path
-func getTemplatePathFromName(name UserChoice) string {
-	return segmentsToPath(templateDirPath, string(name))
+func getTemplatePathFromName(name UserChoice) Path {
+	return segmentsToPath(string(templateDirPath), string(name))
 }
 
 // Takes in a template name and returns the contents
@@ -47,7 +47,7 @@ func getTemplateContents(name UserChoice) string {
 // Returns a map of numerical indexes to names of all created templates
 func getListOfTemplates() map[int]UserChoice {
 	createBlankTemplateIfDoesNotExist()
-	templates, _ := os.ReadDir(templateDirPath)
+	templates, _ := os.ReadDir(string(templateDirPath))
 	numberToTemplate := make(map[int]UserChoice)
 
 	for i, file := range templates {
@@ -63,7 +63,7 @@ func getListOfTemplates() map[int]UserChoice {
 func createBlankTemplateIfDoesNotExist() {
 	existing := getTemplateContents("blank")
 	if existing == "" {
-		os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
+		os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
 		writeStringToFile(blankTemplate, getTemplatePathFromName("blank"))
 	}
 }

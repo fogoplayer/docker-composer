@@ -13,7 +13,7 @@ const (
 )
 
 var home string = os.Getenv("HOME")
-var contentPath string = segmentsToPath(home, ".config", "docker-composer")
+var contentPath Path = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {

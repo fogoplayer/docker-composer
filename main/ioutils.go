@@ -44,6 +44,10 @@ func editFileInUserPreferredEditor(filename Path) {
 	editorProcess.Run()
 }
 
+func createDirectoryIfDoesNotExist(path Path) error {
+	return os.MkdirAll(string(path), os.ModePerm) // TODO slight vulnerability
+}
+
 ///////////////////
 // STDIN/OUT I/O //
 ///////////////////
