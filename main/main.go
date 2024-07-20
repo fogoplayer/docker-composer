@@ -73,10 +73,46 @@ func buildDockerfileMenuOption() {
 
 // Code to execute if the user chooses to manage templates
 func manageTemplatesMenuOption() {
-	getUserSelection(
-		"Choose a template:",
-		getListOfTemplates(),
+	const (
+		CREATE_NEW UserChoice = "create new template"
+		EDIT       UserChoice = "edit a template"
+		DELETE     UserChoice = "delete a template"
 	)
+
+manageTemplateLoop:
+	for {
+		selectedAction := getUserSelection(
+			"What action would you like to perform?",
+			createOptionMap(CREATE_NEW, EDIT, DELETE),
+			"2",
+		)
+
+		if selectedAction == CREATE_NEW {
+			createTemplate()
+			break
+		}
+
+		selectedTemplate := getUserSelection(
+			"Choose a template:",
+			getListOfTemplates(),
+		)
+
+		switch selectedAction {
+		case EDIT:
+			templatePath := getTemplatePathFromName(selectedTemplate)
+			editFileInUserPreferredEditor(templatePath)
+			break manageTemplateLoop
+
+		case DELETE:
+			templatePath := getTemplatePathFromName(selectedTemplate)
+			deleteFile(templatePath)
+			break manageTemplateLoop
+
+		default:
+			fmt.Println("Invalid input. Please try again")
+			continue
+		}
+	}
 }
 
 // Code to execute if the user chooses to manage mixins
@@ -88,6 +124,7 @@ func manageMixinsMenuOption() {
 }
 
 // Takes in a list of possible choices and returns a map of numerical indexes to choices
+// TODO that's called a list... so just return a list
 func createOptionMap(options ...UserChoice) map[int]UserChoice {
 	numberToOption := make(map[int]UserChoice)
 	for i, option := range options {

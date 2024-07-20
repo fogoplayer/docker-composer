@@ -18,14 +18,14 @@ func segmentsToPath(segments ...string) Path {
 	return Path(strings.Join(segments, string(os.PathSeparator)))
 }
 
+func writeStringToFile(data string, path Path) {
+	os.WriteFile(string(path), []byte(data), os.ModePerm)
+}
+
 func readStringFromFile(path Path) (string, error) {
 	data, err := os.ReadFile(string(path))
 
 	return string(data), err
-}
-
-func writeStringToFile(data string, path Path) {
-	os.WriteFile(string(path), []byte(data), os.ModePerm)
 }
 
 func editFileInUserPreferredEditor(filename Path) {
@@ -42,6 +42,10 @@ func editFileInUserPreferredEditor(filename Path) {
 	editorProcess.Stdout = os.Stdout
 	editorProcess.Stderr = os.Stderr
 	editorProcess.Run()
+}
+
+func deleteFile(path Path) {
+	os.Remove(string(path))
 }
 
 func createDirectoryIfDoesNotExist(path Path) error {
