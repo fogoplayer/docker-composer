@@ -49,16 +49,25 @@ func main() {
 }
 
 func getUserMainMenuChoice() UserChoice {
-	defaultSelection := "1"
 
-	fmt.Printf(`Main Menu:
-	1) build dockerfile from template
-	2) manage templates
-	3) manage mixins
-	4) exit
-What would you like to do? (%s): `, defaultSelection)
+	// 	defaultSelection := "1"
 
-	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
+	// 	fmt.Printf(`Main Menu:
+	// 	1) build dockerfile from template
+	// 	2) manage templates
+	// 	3) manage mixins
+	// 	4) exit
+	// What would you like to do? (%s): `, defaultSelection)
+
+	// 	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
+
+	menuOptions := createOptionMap(
+		"build dockerfile from template",
+		"manage templates",
+		"manage mixins",
+		"exit",
+	)
+	userChoice := getUserSelection("Main Menu:", menuOptions, "1")
 
 	return userChoice
 }

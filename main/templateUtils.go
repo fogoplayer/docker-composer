@@ -13,7 +13,7 @@ func createTemplate() string {
 	os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
-	tempFilename := getTemplatePathFromName(string(now))
+	tempFilename := getTemplatePathFromName(UserChoice(now))
 	writeStringToFile("# your template here", tempFilename)
 	// TODO cleanup with defer in case of error
 
@@ -30,24 +30,24 @@ func createTemplate() string {
 	return getTemplate(userSpecifiedTemplateName)
 }
 
-func getTemplatePathFromName(name string) string {
-	return segmentsToPath(templateDirPath, name)
+func getTemplatePathFromName(name UserChoice) string {
+	return segmentsToPath(templateDirPath, string(name))
 }
 
-func getTemplate(name string) string {
+func getTemplate(name UserChoice) string {
 	template, _ := readStringFromFile(getTemplatePathFromName(name))
 	return template
 }
 
-func getListOfTemplates() map[int]string {
+func getListOfTemplates() map[int]UserChoice {
 	createBlankTemplateIfDoesNotExist()
 	templates, _ := os.ReadDir(templateDirPath)
-	numberToTemplate := make(map[int]string)
+	numberToTemplate := make(map[int]UserChoice)
 
 	for i, file := range templates {
 		i = i + 1 // 0-index to 1-index
 		filename := file.Name()
-		numberToTemplate[i] = filename
+		numberToTemplate[i] = UserChoice(filename)
 	}
 
 	return numberToTemplate

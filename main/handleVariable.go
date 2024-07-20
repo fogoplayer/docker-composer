@@ -31,7 +31,7 @@ tokenLoop:
 			numberToMixin := getListOfMixins()
 
 			// if a number
-			num, err := strconv.Atoi(userMixinChoice)
+			num, err := strconv.Atoi(string(userMixinChoice))
 			if err == nil {
 				mixin, err := getMixin(numberToMixin[num])
 				if err != nil {
@@ -83,7 +83,7 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 How would you like to populate {{%s}}? (%s): `, tokenName, continueOption, tokenName, defaultSelection)
 
 	// process response
-	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
+	userChoice := UserChoice(readLineFromStdInAsString(defaultSelection))
 
 	if userChoice == "3" && !allowContinue {
 		userChoice = INVALID
@@ -92,13 +92,13 @@ How would you like to populate {{%s}}? (%s): `, tokenName, continueOption, token
 	return userChoice
 }
 
-func getUserMixinChoice() string {
-	defaultChoice := 1
+func getUserMixinChoice() UserChoice {
+	defaultChoice := UserChoice("1")
 
 	fmt.Println("Saved mixins:")
 	printSelectionList(getListOfMixins())
 
 	fmt.Printf("Which would you like to choose? (%d): ", defaultChoice)
 
-	return readLineFromStdInAsString(string(defaultChoice))
+	return readLineFromStdInAsString(defaultChoice)
 }

@@ -13,7 +13,7 @@ func createMixin() (string, error) {
 	os.MkdirAll(mixinDirPath, os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
-	tempFilename := getMixinPathFromName(string(now))
+	tempFilename := getMixinPathFromName(UserChoice(now))
 	writeStringToFile("# your mixin here", tempFilename)
 	// TODO cleanup with defer in case of error
 
@@ -30,23 +30,23 @@ func createMixin() (string, error) {
 	return getMixin(userSpecifiedMixinName)
 }
 
-func getMixinPathFromName(name string) string {
-	return segmentsToPath(mixinDirPath, name+".mxin")
+func getMixinPathFromName(name UserChoice) string {
+	return segmentsToPath(mixinDirPath, string(name)+".mxin")
 }
 
-func getMixin(name string) (string, error) {
+func getMixin(name UserChoice) (string, error) {
 	return readStringFromFile(getMixinPathFromName(name))
 }
 
-func getListOfMixins() map[int]string {
+func getListOfMixins() map[int]UserChoice {
 	mixins, _ := os.ReadDir(mixinDirPath)
-	numberToMixin := make(map[int]string)
+	numberToMixin := make(map[int]UserChoice)
 
 	for i, file := range mixins {
 		i = i + 1 // 0-index to 1-index
 		filename := file.Name()
 		filename = filename[:len(filename)-5]
-		numberToMixin[i] = filename
+		numberToMixin[i] = UserChoice(filename)
 	}
 
 	return numberToMixin
