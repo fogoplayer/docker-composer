@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -15,7 +16,7 @@ func createTemplate() (string, error) {
 	// Create temporary template file
 	os.MkdirAll(string(templateDirPath), os.ModePerm) // TODO slight vulnerability
 
-	now := time.Now().UnixNano()
+	now := strconv.FormatInt(time.Now().UnixNano(), 10)
 	tempFilename := getTemplatePathFromName(UserChoice(now))
 	writeStringToFile("# your template here", tempFilename)
 	// TODO cleanup with defer in case of error
@@ -25,10 +26,19 @@ func createTemplate() (string, error) {
 	editFileInUserPreferredEditor(tempFilename)
 
 	// save file with user-specified name
-	fmt.Print("Choose a name for your template: ")
-	userSpecifiedTemplateName := readLineFromStdInAsString()
+	var path Path
+	var userSpecifiedTemplateName UserChoice
+	for {
+		fmt.Print("Choose a name for your template: ")
+		userSpecifiedTemplateName = readLineFromStdInAsString()
 
-	path := getTemplatePathFromName(userSpecifiedTemplateName)
+		path = getTemplatePathFromName(userSpecifiedTemplateName)
+		if fileExists(path) {
+			fmt.Println("That name is already in use.")
+			continue
+		}
+		break
+	}
 	os.Rename(string(tempFilename), string(path))
 
 	return getTemplateContents(userSpecifiedTemplateName)
@@ -43,7 +53,6 @@ func getTemplatePathFromName(name UserChoice) Path {
 func getTemplateContents(name UserChoice) (string, error) {
 	path := getTemplatePathFromName(name)
 	return readStringFromFile(path)
-
 }
 
 // Returns a map of numerical indexes to names of all created templates
