@@ -30,7 +30,7 @@ func createMixin() (string, error) {
 }
 
 func getMixinPathFromName(name UserChoice) Path {
-	return segmentsToPath(string(mixinDirPath), string(name)+".mxin")
+	return segmentsToPath(string(mixinDirPath), string(name))
 }
 
 func getMixinContents(name UserChoice) (string, error) {
@@ -44,7 +44,6 @@ func getListOfMixins() map[int]UserChoice {
 	for i, file := range mixins {
 		i = i + 1 // 0-index to 1-index
 		filename := file.Name()
-		filename = filename[:len(filename)-5]
 		numberToMixin[i] = UserChoice(filename)
 	}
 
