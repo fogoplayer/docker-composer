@@ -82,7 +82,7 @@ func buildDockerfileMenuOption() {
 	ast := tokenize(templateContents)
 	for i, token := range ast {
 		if token.kind == VARIABLE {
-			ast[i] = handleVariable(token)
+			ast[i] = populateVariableWithMixins(token)
 		}
 	}
 

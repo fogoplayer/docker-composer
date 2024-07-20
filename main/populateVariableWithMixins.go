@@ -16,10 +16,10 @@ const (
 
 // TODO allow template authors to provide defaults for tokens
 
-func handleVariable(token Token) Token {
+func populateVariableWithMixins(token Token) Token {
 tokenLoop:
 	for {
-		userChoice := getUserHandleVariableChoice(token)
+		userChoice := getUserMixinChoice(token)
 		var newValue string
 
 		switch userChoice {
@@ -51,7 +51,7 @@ tokenLoop:
 	return token
 }
 
-func getUserHandleVariableChoice(token Token) UserChoice {
+func getUserMixinChoice(token Token) UserChoice {
 	// Create prompt
 	tokenName := token.name
 
