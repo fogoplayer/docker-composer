@@ -62,7 +62,7 @@ func buildDockerfileMenuOption() {
 	template, _ := readStringFromFile("/home/zarinloosli/docker-composer/example.tplt")
 	ast := tokenize(template)
 	for i, token := range ast {
-		if token.kind == variable {
+		if token.kind == VARIABLE {
 			ast[i] = handleVariable(token)
 		}
 	}

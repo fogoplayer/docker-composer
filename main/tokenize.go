@@ -1,18 +1,18 @@
 package main
 
 // TYPES
-type Kind int
+type TokenKind string
 
 type Token struct {
-	kind   Kind
+	kind   TokenKind
 	name   string
 	values []string
 }
 
 // ENUMS
 const (
-	literal Kind = iota
-	variable
+	LITERAL  TokenKind = "literal"
+	VARIABLE TokenKind = "variable"
 )
 
 const (
@@ -30,13 +30,13 @@ func tokenize(template string) []Token {
 		// I'm not worried about that rn
 		if template[i:i+2] == open {
 			tokens = append(tokens, Token{
-				kind:   literal,
+				kind:   LITERAL,
 				name:   "",
 				values: []string{template[tokenStart:i]},
 			})
 		} else if template[i:i+2] == close {
 			tokens = append(tokens, Token{
-				kind:   variable,
+				kind:   VARIABLE,
 				name:   template[tokenStart:i],
 				values: []string{},
 			})
@@ -49,7 +49,7 @@ func tokenize(template string) []Token {
 	// add any final tokens
 	if tokenStart < len(template)-1 {
 		tokens = append(tokens, Token{
-			kind:   literal,
+			kind:   LITERAL,
 			name:   "",
 			values: []string{template[tokenStart:]},
 		})
