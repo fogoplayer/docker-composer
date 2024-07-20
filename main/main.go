@@ -18,7 +18,7 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
-	os.Args = []string{"dockerfile", "blank", "nano"}
+	os.Args = []string{"template", "delete", "testing\n"}
 	handleCLArgs(os.Args)
 
 	for {
@@ -107,7 +107,7 @@ func buildDockerfileMenuOption(defaults ...string) {
 	}
 
 	if len(defaults) > 0 {
-		slog.Warn("WARNING: Some passed-in values were unused")
+		slog.Warn("Some passed-in values were unused")
 	}
 
 	dockerfile := buildDockerfileFromAst(ast)
@@ -115,45 +115,82 @@ func buildDockerfileMenuOption(defaults ...string) {
 }
 
 // Code to execute if the user chooses to manage templates
-func manageTemplatesMenuOption() {
+func manageTemplatesMenuOption(args ...string) {
 	const (
 		CREATE_NEW UserChoice = "create new template"
 		EDIT       UserChoice = "edit a template"
 		DELETE     UserChoice = "delete a template"
+		INVALID    UserChoice = "invalid"
 	)
 
-manageTemplateLoop:
+	var selectedAction UserChoice = INVALID
+	var selectedTemplate UserChoice = INVALID
+
+	if len(args) > 0 {
+		switch args[0] {
+		case "create":
+			selectedAction = CREATE_NEW
+		case "edit":
+			selectedAction = EDIT
+		case "delete":
+			selectedAction = DELETE
+		}
+		args = args[1:]
+	}
+
+	if len(args) > 0 {
+		selectedTemplate = UserChoice(args[0])
+	}
+
+selectActionLoop:
 	for {
-		selectedAction := getUserSelection(
-			"What action would you like to perform?",
-			[]UserChoice{CREATE_NEW, EDIT, DELETE},
-			"2",
-		)
+		if selectedAction == INVALID {
+			selectedAction = getUserSelection(
+				"What action would you like to perform?",
+				[]UserChoice{CREATE_NEW, EDIT, DELETE},
+				"2",
+			)
+		}
 
 		if selectedAction == CREATE_NEW {
 			createTemplate()
-			break
+			return
 		}
 
-		selectedTemplate := getUserSelection(
-			"Choose a template:",
-			getListOfTemplates(),
-		)
+		if selectedAction != CREATE_NEW && selectedAction != EDIT && selectedAction != DELETE {
+			fmt.Println("Invalid input. Please try again")
+			selectedAction = INVALID
+			selectedTemplate = INVALID
+			continue selectActionLoop
+		}
+		break selectActionLoop
+	}
+
+selectTemplateLoop:
+	for {
+		if selectedTemplate == INVALID {
+			selectedTemplate = getUserSelection(
+				"Choose a template:",
+				getListOfTemplates(),
+			)
+		}
 
 		switch selectedAction {
 		case EDIT:
 			templatePath := getTemplatePathFromName(selectedTemplate)
 			editFileInUserPreferredEditor(templatePath)
-			break manageTemplateLoop
+			break selectTemplateLoop
 
 		case DELETE:
 			templatePath := getTemplatePathFromName(selectedTemplate)
 			deleteFile(templatePath)
-			break manageTemplateLoop
+			break selectTemplateLoop
 
 		default:
 			fmt.Println("Invalid input. Please try again")
-			continue
+			selectedAction = INVALID
+			selectedTemplate = INVALID
+			continue selectTemplateLoop
 		}
 	}
 }
@@ -213,11 +250,11 @@ func handleCLArgs(args []string) {
 		buildDockerfileMenuOption(args[1:]...)
 		os.Exit(0)
 
-	case "templates":
-		manageTemplatesMenuOption()
+	case "template":
+		manageTemplatesMenuOption(args[1:]...)
 		os.Exit(0)
 
-	case "mixins":
+	case "mixin":
 		manageMixinsMenuOption()
 		os.Exit(0)
 
