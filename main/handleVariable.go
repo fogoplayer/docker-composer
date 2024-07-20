@@ -8,9 +8,10 @@ import (
 type UserChoice string
 
 const (
-	CREATE_NEW UserChoice = "1"
-	REUSE      UserChoice = "2"
-	CONTINUE   UserChoice = "3"
+	CREATE_NEW UserChoice = "create a new mixin"
+	REUSE      UserChoice = "reuse an existing mixin"
+	CONTINUE   UserChoice = "continue"
+	SKIP       UserChoice = "skip"
 	INVALID    UserChoice = "INVALID"
 )
 
@@ -26,7 +27,7 @@ tokenLoop:
 		case CREATE_NEW:
 			newValue, _ = createMixin()
 
-		case "2":
+		case REUSE:
 			userMixinChoice := getUserMixinChoice()
 			numberToMixin := getListOfMixins()
 
@@ -50,7 +51,9 @@ tokenLoop:
 			}
 			newValue = mixin
 
-		case "3":
+		case CONTINUE:
+			fallthrough
+		case SKIP:
 			break tokenLoop
 
 		default:
@@ -63,33 +66,21 @@ tokenLoop:
 }
 
 func getUserHandleVariableChoice(token Token) UserChoice {
-
 	// Create prompt
 	tokenName := token.name
-	var defaultSelection UserChoice
-	continueOption := ""
-	allowContinue := len(token.values) > 0
 
-	if allowContinue {
-		defaultSelection = CONTINUE
-		continueOption = "\n\t3) continue"
+	var moveOnString UserChoice
+	if len(token.values) > 0 {
+		moveOnString = CONTINUE
 	} else {
-		defaultSelection = REUSE
+		moveOnString = SKIP
 	}
 
-	fmt.Printf(`Options for  {{%s}}:
-	1) create a new mixin
-	2) reuse an existing mixin%s
-How would you like to populate {{%s}}? (%s): `, tokenName, continueOption, tokenName, defaultSelection)
-
-	// process response
-	userChoice := UserChoice(readLineFromStdInAsString(defaultSelection))
-
-	if userChoice == "3" && !allowContinue {
-		userChoice = INVALID
-	}
-
-	return userChoice
+	return getUserSelection("Options for populating {{"+tokenName+"}}", createOptionMap(
+		CREATE_NEW,
+		REUSE,
+		moveOnString,
+	), "2")
 }
 
 func getUserMixinChoice() UserChoice {
