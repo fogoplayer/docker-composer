@@ -13,7 +13,7 @@ const (
 )
 
 var home string = os.Getenv("HOME")
-var contentPath Path = segmentsToPath(home, ".config", "docker-composer")
+var contentPath, _ = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
@@ -99,12 +99,12 @@ manageTemplateLoop:
 
 		switch selectedAction {
 		case EDIT:
-			templatePath := getTemplatePathFromName(selectedTemplate)
+			templatePath, _ := getTemplatePathFromName(selectedTemplate)
 			editFileInUserPreferredEditor(templatePath)
 			break manageTemplateLoop
 
 		case DELETE:
-			templatePath := getTemplatePathFromName(selectedTemplate)
+			templatePath, _ := getTemplatePathFromName(selectedTemplate)
 			deleteFile(templatePath)
 			break manageTemplateLoop
 
@@ -117,10 +117,45 @@ manageTemplateLoop:
 
 // Code to execute if the user chooses to manage mixins
 func manageMixinsMenuOption() {
-	getUserSelection(
-		"Choose a mixin:",
-		getListOfMixins(),
+	const (
+		CREATE_NEW UserChoice = "create new mixin"
+		EDIT       UserChoice = "edit a mixin"
+		DELETE     UserChoice = "delete a mixin"
 	)
+manageMixinLoop:
+	for {
+		selectedAction := getUserSelection(
+			"What action would you like to perform?",
+			createOptionMap(CREATE_NEW, EDIT, DELETE),
+			"2",
+		)
+
+		if selectedAction == CREATE_NEW {
+			createTemplate()
+			break
+		}
+
+		selectedMixin := getUserSelection(
+			"Choose a mixin:",
+			getListOfMixins(),
+		)
+
+		switch selectedAction {
+		case EDIT:
+			mixinPath, _ := getMixinPathFromName(selectedMixin)
+			editFileInUserPreferredEditor(mixinPath)
+			break manageMixinLoop
+
+		case DELETE:
+			mixinPath, _ := getMixinPathFromName(selectedMixin)
+			deleteFile(mixinPath)
+			break manageMixinLoop
+
+		default:
+			fmt.Println("Invalid input. Please try again")
+			continue
+		}
+	}
 }
 
 // Takes in a list of possible choices and returns a map of numerical indexes to choices

@@ -22,7 +22,7 @@ func saveDockerFile(dockerfile string) {
 	fmt.Print("Enter a path to save your dockerfile to (~/): ")
 	savePath := Path(readLineFromStdInAsString(UserChoice(os.Getenv("HOME"))))
 
-	savePath = segmentsToPath(string(savePath), "dockerfile")
+	savePath, _ = segmentsToPath(string(savePath), "dockerfile")
 	writeStringToFile(dockerfile, savePath)
 	fmt.Printf("dockerfile saved to %s\n", savePath)
 }

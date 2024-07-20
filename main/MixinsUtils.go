@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-var mixinDirPath Path = segmentsToPath(string(contentPath), "mixins")
+var mixinDirPath, _ = segmentsToPath(string(contentPath), "mixins")
 
 func createMixin() (string, error) {
 	createDirectoryIfDoesNotExist(mixinDirPath)
 
 	now := time.Now().UnixNano()
-	tempFilename := getMixinPathFromName(UserChoice(now))
+	tempFilename, _ := getMixinPathFromName(UserChoice(now))
 	writeStringToFile("# your mixin here", tempFilename)
 	// TODO cleanup with defer in case of error
 
@@ -24,17 +24,25 @@ func createMixin() (string, error) {
 	fmt.Print("Choose a name for your mixin: ")
 	userSpecifiedMixinName := readLineFromStdInAsString()
 
-	os.Rename(string(tempFilename), string(getMixinPathFromName(userSpecifiedMixinName)))
+	path, err := getMixinPathFromName(userSpecifiedMixinName)
+	if err != nil {
+		return "", err
+	}
+	os.Rename(string(tempFilename), string(path))
 
 	return getMixinContents(userSpecifiedMixinName)
 }
 
-func getMixinPathFromName(name UserChoice) Path {
+func getMixinPathFromName(name UserChoice) (Path, error) {
 	return segmentsToPath(string(mixinDirPath), string(name))
 }
 
 func getMixinContents(name UserChoice) (string, error) {
-	return readStringFromFile(getMixinPathFromName(name))
+	path, err := getMixinPathFromName(name)
+	if err != nil {
+		return "", err
+	}
+	return readStringFromFile(path)
 }
 
 func getListOfMixins() map[int]UserChoice {

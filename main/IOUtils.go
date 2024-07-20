@@ -14,8 +14,13 @@ type Path string
 // File I/O //
 //////////////
 
-func segmentsToPath(segments ...string) Path {
-	return Path(strings.Join(segments, string(os.PathSeparator)))
+func segmentsToPath(segments ...string) (Path, error) {
+	path := Path(strings.Join(segments, string(os.PathSeparator)))
+	if fileExists(path) {
+		return path, nil
+	} else {
+		return "", os.ErrNotExist
+	}
 }
 
 func writeStringToFile(data string, path Path) {
@@ -50,6 +55,11 @@ func deleteFile(path Path) {
 
 func createDirectoryIfDoesNotExist(path Path) error {
 	return os.MkdirAll(string(path), os.ModePerm) // TODO slight vulnerability
+}
+
+func fileExists(path Path) bool {
+	_, err := os.Stat("/path/to/whatever")
+	return err == nil
 }
 
 ///////////////////
