@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	BUILD_DOCKERFILE UserChoice = "1"
-	MANAGE_TEMPLATES UserChoice = "2"
-	MANAGE_MIXINS    UserChoice = "3"
-	EXIT             UserChoice = "4"
+	BUILD_DOCKERFILE UserChoice = "build dockerfile from template"
+	MANAGE_TEMPLATES UserChoice = "manage templates"
+	MANAGE_MIXINS    UserChoice = "manage mixins"
+	EXIT             UserChoice = "exit"
 )
 
 var home string = os.Getenv("HOME")
@@ -49,25 +49,13 @@ func main() {
 }
 
 func getUserMainMenuChoice() UserChoice {
-
-	// 	defaultSelection := "1"
-
-	// 	fmt.Printf(`Main Menu:
-	// 	1) build dockerfile from template
-	// 	2) manage templates
-	// 	3) manage mixins
-	// 	4) exit
-	// What would you like to do? (%s): `, defaultSelection)
-
-	// 	userChoice := UserChoice(readLineFromStdInAsString(string(defaultSelection)))
-
 	menuOptions := createOptionMap(
-		"build dockerfile from template",
-		"manage templates",
-		"manage mixins",
-		"exit",
+		BUILD_DOCKERFILE,
+		MANAGE_TEMPLATES,
+		MANAGE_MIXINS,
+		EXIT,
 	)
-	userChoice := getUserSelection("Main Menu:", menuOptions, "1")
+	userChoice := getUserSelection("What would you like to do?:", menuOptions, BUILD_DOCKERFILE)
 
 	return userChoice
 }

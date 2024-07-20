@@ -50,15 +50,28 @@ func openFileInUserPreferredEditor(filename string) {
 
 func printSelectionList(mapObj map[int]UserChoice) {
 	for i, val := range mapObj {
-		fmt.Println("\t", strconv.Itoa(i)+")", val)
+		fmt.Println("  "+strconv.Itoa(i)+")", val)
 	}
+}
+
+func createOptionMap(options ...UserChoice) map[int]UserChoice {
+	numberToOption := make(map[int]UserChoice)
+	for i, option := range options {
+		numberToOption[i+1 /* 0-index to 1-index */] = option
+	}
+	return numberToOption
 }
 
 func getUserSelection(message string, numberToOption map[int]UserChoice, defaultValue ...UserChoice) UserChoice {
 	fmt.Println(message)
 	printSelectionList(numberToOption)
-	fmt.Printf("Selection (%s): ", defaultValue[0])
+	fmt.Printf("Choose an option (%s): ", defaultValue[0])
 	userChoice := readLineFromStdInAsString(defaultValue[0])
+
+	// if default
+	if userChoice == "" {
+		userChoice = defaultValue[0]
+	}
 
 	// if a number
 	num, err := strconv.Atoi(string(userChoice))
@@ -68,12 +81,4 @@ func getUserSelection(message string, numberToOption map[int]UserChoice, default
 
 	// if a string
 	return userChoice
-}
-
-func createOptionMap(options ...string) map[int]UserChoice {
-	numberToOption := make(map[int]UserChoice)
-	for i, option := range options {
-		numberToOption[i+1 /* 0-index to 1-index */] = UserChoice(option)
-	}
-	return numberToOption
 }
