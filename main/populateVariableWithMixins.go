@@ -16,11 +16,20 @@ const (
 
 // TODO allow template authors to provide defaults for tokens
 
-func populateVariableWithMixins(token Token) Token {
+func populateVariableWithMixins(token Token, providedValues ...UserChoice) Token {
+	var userChoice UserChoice = INVALID
+	var newValue string
+
+	if len(providedValues) > 0 {
+		userChoice = providedValues[0]
+		println("Populating {{"+token.name+"}} with mixin", userChoice)
+	}
+
 tokenLoop:
 	for {
-		userChoice := getUserMixinChoice(token)
-		var newValue string
+		if userChoice == INVALID {
+			userChoice = getUserMixinChoice(token)
+		}
 
 		switch userChoice {
 		case CREATE_NEW:
@@ -29,6 +38,7 @@ tokenLoop:
 			if e != nil {
 				panic(e)
 			}
+			break tokenLoop
 
 		case CONTINUE:
 			fallthrough
@@ -39,15 +49,17 @@ tokenLoop:
 			mixin, e := getMixinContents(userChoice)
 			if e == nil {
 				newValue = mixin
-				break
+				break tokenLoop
 			}
 
 			fmt.Println("Invalid input. Please try again")
+			userChoice = INVALID
 			continue
 		}
-
-		token.values = append(token.values, newValue)
 	}
+
+	token.values = append(token.values, newValue)
+
 	return token
 }
 

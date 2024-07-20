@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 )
 
@@ -17,6 +18,9 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 
 // Entry point for docker-composer
 func main() {
+	os.Args = []string{"dockerfile", "blank", "nano"}
+	handleCLArgs(os.Args)
+
 	for {
 		userChoice := getUserSelection(
 			"What would you like to do?:",
@@ -50,19 +54,30 @@ func main() {
 
 // Code to execute if the user chooses to build a dockerfile.
 //
-// Reads in a template, tokenizes it, replaces variables, and saves to a directory of the user's choice
-func buildDockerfileMenuOption() {
+// # Reads in a template, tokenizes it, replaces variables, and saves to a directory of the user's choice
+//
+// Optionally, strings can be passed in to bypass selections. The first string is the name of a template, and the following
+// strings will be passed into each variable slot 1:1.
+func buildDockerfileMenuOption(defaults ...string) {
 	const CREATE_NEW = "create a new template"
-
-	selectedTemplateName := getUserSelection(
-		"Choose a template:",
-		append(
-			getListOfTemplates(),
-			CREATE_NEW,
-		),
-	)
-
+	var selectedTemplateName UserChoice
 	var templateContents string
+
+	// choose a template
+	if len(defaults) > 0 {
+		selectedTemplateName = UserChoice(defaults[0])
+		defaults = defaults[1:]
+	} else {
+		selectedTemplateName = getUserSelection(
+			"Choose a template:",
+			append(
+				getListOfTemplates(),
+				CREATE_NEW,
+			),
+		)
+	}
+
+	// get template contents
 	var e error
 
 	if selectedTemplateName == CREATE_NEW {
@@ -82,8 +97,17 @@ func buildDockerfileMenuOption() {
 	ast := tokenize(templateContents)
 	for i, token := range ast {
 		if token.kind == VARIABLE {
-			ast[i] = populateVariableWithMixins(token)
+			if len(defaults) > 0 {
+				ast[i] = populateVariableWithMixins(token, UserChoice(defaults[0]))
+				defaults = defaults[1:]
+			} else {
+				ast[i] = populateVariableWithMixins(token)
+			}
 		}
+	}
+
+	if len(defaults) > 0 {
+		slog.Warn("WARNING: Some passed-in values were unused")
 	}
 
 	dockerfile := buildDockerfileFromAst(ast)
@@ -175,5 +199,29 @@ manageMixinLoop:
 			fmt.Println("Invalid input. Please try again")
 			continue manageMixinLoop
 		}
+	}
+}
+
+// parses command-line arguments
+func handleCLArgs(args []string) {
+	if len(args) == 0 {
+		return
+	}
+
+	switch args[0] {
+	case "dockerfile":
+		buildDockerfileMenuOption(args[1:]...)
+		os.Exit(0)
+
+	case "templates":
+		manageTemplatesMenuOption()
+		os.Exit(0)
+
+	case "mixins":
+		manageMixinsMenuOption()
+		os.Exit(0)
+
+	default:
+		fmt.Println("Unrecognized parameter")
 	}
 }
