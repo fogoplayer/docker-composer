@@ -38,7 +38,7 @@ func getMixin(name string) (string, error) {
 	return readStringFromFile(getMixinPathFromName(name))
 }
 
-func listMixins() map[int]string {
+func getListOfMixins() map[int]string {
 	mixins, _ := os.ReadDir(mixinDirPath)
 	numberToMixin := make(map[int]string)
 

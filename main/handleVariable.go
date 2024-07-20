@@ -28,7 +28,7 @@ tokenLoop:
 
 		case "2":
 			userMixinChoice := getUserMixinChoice()
-			numberToMixin := listMixins()
+			numberToMixin := getListOfMixins()
 
 			// if a number
 			num, err := strconv.Atoi(userMixinChoice)
@@ -96,7 +96,7 @@ func getUserMixinChoice() string {
 	defaultChoice := 1
 
 	fmt.Println("Saved mixins:")
-	printSelectionList(listMixins())
+	printSelectionList(getListOfMixins())
 
 	fmt.Printf("Which would you like to choose? (%d): ", defaultChoice)
 

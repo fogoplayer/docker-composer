@@ -3,15 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 )
 
 var templateDirPath string = segmentsToPath(contentPath, "templates")
 
 func createTemplate() string {
-	// Create temporary mixin file
-	os.MkdirAll(mixinDirPath, os.ModePerm) // TODO slight vulnerability
+	// Create temporary template file
+	os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
 
 	now := time.Now().UnixNano()
 	tempFilename := getTemplatePathFromName(string(now))
@@ -32,30 +31,36 @@ func createTemplate() string {
 }
 
 func getTemplatePathFromName(name string) string {
-	return segmentsToPath(mixinDirPath, name+".mxin")
+	return segmentsToPath(templateDirPath, name)
 }
 
 func getTemplate(name string) string {
-	return readStringFromFile(getTemplatePathFromName(name))
+	template, _ := readStringFromFile(getTemplatePathFromName(name))
+	return template
 }
 
-func listTemplates() map[int]string {
+func getListOfTemplates() map[int]string {
+	createBlankTemplateIfDoesNotExist()
 	templates, _ := os.ReadDir(templateDirPath)
 	numberToTemplate := make(map[int]string)
 
 	for i, file := range templates {
-		i = i + 2 // 0-index to 1-index, with offset
+		i = i + 1 // 0-index to 1-index
 		filename := file.Name()
-		filename = filename[:len(filename)-5]
-
-		fmt.Println("\t", strconv.Itoa(i)+")", filename)
 		numberToTemplate[i] = filename
 	}
 
 	return numberToTemplate
 }
 
-var defaultTemplate string = `FROM {{base_image}}
-USER root
+func createBlankTemplateIfDoesNotExist() {
+	existing := getTemplate("blank")
+	if existing == "" {
+		os.MkdirAll(templateDirPath, os.ModePerm) // TODO slight vulnerability
+		writeStringToFile(blankTemplate, getTemplatePathFromName("blank"))
+	}
+}
 
-{{setup}}`
+var blankTemplate string = `FROM {{base_image}}
+
+{{contents}}`

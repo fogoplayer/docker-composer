@@ -33,6 +33,7 @@ func main() {
 			saveDockerFile(dockerfile)
 
 		case MANAGE_TEMPLATES:
+			printSelectionList(getListOfTemplates())
 			println(2)
 
 		case MANAGE_MIXINS:
