@@ -290,7 +290,7 @@ func handleCLArgs(args []string) (UserChoice, []string) {
 	workingDirectory = Path(args[0])
 	args = args[1:]
 
-	if len(args) == 1 {
+	if len(args) == 0 {
 		return INVALID, []string{}
 	}
 

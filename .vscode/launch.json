@@ -9,9 +9,9 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}/main",
+      "program": "${workspaceFolder}",
       "console": "integratedTerminal",
-      "args": ["dockerfile", "menu", "# test"]
+      "args": []
     }
   ]
 }
