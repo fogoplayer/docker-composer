@@ -49,13 +49,14 @@ func main() {
 }
 
 func getUserMainMenuChoice() UserChoice {
-	menuOptions := createOptionMap(
-		BUILD_DOCKERFILE,
-		MANAGE_TEMPLATES,
-		MANAGE_MIXINS,
-		EXIT,
-	)
-	userChoice := getUserSelection("What would you like to do?:", menuOptions, BUILD_DOCKERFILE)
+	userChoice := getUserSelection("What would you like to do?:",
+		createOptionMap(
+			BUILD_DOCKERFILE,
+			MANAGE_TEMPLATES,
+			MANAGE_MIXINS,
+			EXIT,
+		),
+		"1")
 
 	return userChoice
 }
