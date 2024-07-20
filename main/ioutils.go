@@ -49,7 +49,8 @@ func openFileInUserPreferredEditor(filename string) {
 }
 
 func printSelectionList(mapObj map[int]UserChoice) {
-	for i, val := range mapObj {
+	for i := 1; i < len(mapObj); i++ {
+		val := mapObj[i]
 		fmt.Println("  "+strconv.Itoa(i)+")", val)
 	}
 }
