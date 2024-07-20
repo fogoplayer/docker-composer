@@ -36,8 +36,8 @@ tokenLoop:
 				getListOfMixins(),
 			)
 
-			mixin, err := getMixinContents(userMixinChoice)
-			if err != nil {
+			mixin, e := getMixinContents(userMixinChoice)
+			if e != nil {
 				fmt.Println("Unable to retrieve mixin. Please try again.")
 				break
 			}

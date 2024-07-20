@@ -24,9 +24,9 @@ func writeStringToFile(data string, path Path) error {
 }
 
 func readStringFromFile(path Path) (string, error) {
-	data, err := os.ReadFile(string(path))
+	data, e := os.ReadFile(string(path))
 
-	return string(data), err
+	return string(data), e
 }
 
 func editFileInUserPreferredEditor(filename Path) error {
@@ -54,8 +54,8 @@ func createDirectoryIfDoesNotExist(path Path) error {
 }
 
 func fileExists(path Path) bool {
-	_, err := os.Stat(string(path))
-	return err == nil
+	_, e := os.Stat(string(path))
+	return e == nil
 }
 
 func errorIsNotThatFileExists(e error) bool {
@@ -99,8 +99,8 @@ func getUserSelection(message string, numberToOption map[int]UserChoice, default
 	}
 
 	// if a number
-	num, err := strconv.Atoi(string(userChoice))
-	if err == nil {
+	num, e := strconv.Atoi(string(userChoice))
+	if e == nil {
 		return numberToOption[num]
 	}
 

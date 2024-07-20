@@ -66,13 +66,13 @@ func getListOfTemplates() map[int]UserChoice {
 
 // Checks if the `blank` template exists. If not, creates one using a default template hard-coded into the source code.
 func createBlankTemplateIfDoesNotExist() error {
-	_, err := getTemplateContents("blank")
-	if err == nil {
+	_, e := getTemplateContents("blank")
+	if e == nil {
 		return nil
 	}
 
-	if errorIsNotThatFileExists(err) {
-		panic(err)
+	if errorIsNotThatFileExists(e) {
+		panic(e)
 	}
 
 	createDirectoryIfDoesNotExist(templateDirPath)
