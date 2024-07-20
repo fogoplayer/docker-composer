@@ -33,8 +33,7 @@ func main() {
 			saveDockerFile(dockerfile)
 
 		case MANAGE_TEMPLATES:
-			printSelectionList(getListOfTemplates())
-			println(2)
+			getUserSelection("Choose a template:", getListOfTemplates())
 
 		case MANAGE_MIXINS:
 			println(3)
@@ -56,7 +55,7 @@ func getUserMainMenuChoice() UserChoice {
 			MANAGE_MIXINS,
 			EXIT,
 		),
-		"1")
+	)
 
 	return userChoice
 }

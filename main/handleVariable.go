@@ -27,7 +27,7 @@ tokenLoop:
 			newValue, _ = createMixin()
 
 		case REUSE:
-			userMixinChoice := getUserSelection("Choose a saved mixin:", getListOfMixins(), "1")
+			userMixinChoice := getUserSelection("Choose a saved mixin:", getListOfMixins())
 
 			mixin, err := getMixin(userMixinChoice)
 			if err != nil {

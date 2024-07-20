@@ -64,6 +64,10 @@ func createOptionMap(options ...UserChoice) map[int]UserChoice {
 }
 
 func getUserSelection(message string, numberToOption map[int]UserChoice, defaultValue ...UserChoice) UserChoice {
+	if len(defaultValue) == 0 {
+		defaultValue = []UserChoice{"1"}
+	}
+
 	fmt.Println(message)
 	printSelectionList(numberToOption)
 	fmt.Printf("Choose an option (%s): ", defaultValue[0])
