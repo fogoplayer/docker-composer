@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type UserChoice string
 
 const (
 	CREATE_NEW UserChoice = "create a new mixin"
-	REUSE      UserChoice = "reuse an existing mixin"
 	CONTINUE   UserChoice = "continue"
 	SKIP       UserChoice = "skip"
 	INVALID    UserChoice = "INVALID"
@@ -30,25 +30,18 @@ tokenLoop:
 				panic(e)
 			}
 
-		case REUSE:
-			userMixinChoice := getUserSelection(
-				"Choose a saved mixin:",
-				getListOfMixins(),
-			)
-
-			mixin, e := getMixinContents(userMixinChoice)
-			if e != nil {
-				fmt.Println("Unable to retrieve mixin. Please try again.")
-				break
-			}
-			newValue = mixin
-
 		case CONTINUE:
 			fallthrough
 		case SKIP:
 			break tokenLoop
 
 		default:
+			mixin, e := getMixinContents(userChoice)
+			if e == nil {
+				newValue = mixin
+				break
+			}
+
 			fmt.Println("Invalid input. Please try again")
 			continue
 		}
@@ -66,19 +59,19 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 	var defaultChoice UserChoice
 	if len(token.values) > 0 {
 		moveOnString = CONTINUE
-		defaultChoice = "3"
+		defaultChoice = UserChoice(strconv.Itoa(len(getListOfMixins()) + 2)) // because we append two options
 	} else {
 		moveOnString = SKIP
-		defaultChoice = "2"
+		defaultChoice = "1"
 	}
 
 	return getUserSelection(
 		"Options for populating {{"+tokenName+"}}",
-		[]UserChoice{
+		append(
+			getListOfMixins(),
 			CREATE_NEW,
-			REUSE,
 			moveOnString,
-		},
+		),
 		defaultChoice,
 	)
 }

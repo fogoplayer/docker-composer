@@ -100,8 +100,8 @@ func getUserSelection(message string, numberToOption []UserChoice, defaultValue 
 
 	// if a number
 	num, e := strconv.Atoi(string(userChoice))
-	if e == nil {
-		return numberToOption[num]
+	if e == nil && num > 0 {
+		return numberToOption[num-1]
 	}
 
 	// if a string

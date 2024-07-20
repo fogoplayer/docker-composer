@@ -53,10 +53,14 @@ func main() {
 // Reads in a template, tokenizes it, replaces variables, and saves to a directory of the user's choice
 func buildDockerfileMenuOption() {
 	const CREATE_NEW = "create a new template"
-	templateList := getListOfTemplates()
-	templateList[len(templateList)+1] = CREATE_NEW
 
-	selectedTemplateName := getUserSelection("Choose a template:", templateList)
+	selectedTemplateName := getUserSelection(
+		"Choose a template:",
+		append(
+			getListOfTemplates(),
+			CREATE_NEW,
+		),
+	)
 
 	var templateContents string
 	var e error
