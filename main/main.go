@@ -33,7 +33,10 @@ func main() {
 			saveDockerFile(dockerfile)
 
 		case MANAGE_TEMPLATES:
-			getUserSelection("Choose a template:", getListOfTemplates())
+			getUserSelection(
+				"Choose a template:",
+				getListOfTemplates(),
+			)
 
 		case MANAGE_MIXINS:
 			println(3)
@@ -48,7 +51,8 @@ func main() {
 }
 
 func getUserMainMenuChoice() UserChoice {
-	userChoice := getUserSelection("What would you like to do?:",
+	userChoice := getUserSelection(
+		"What would you like to do?:",
 		createOptionMap(
 			BUILD_DOCKERFILE,
 			MANAGE_TEMPLATES,

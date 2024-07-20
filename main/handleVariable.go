@@ -27,7 +27,10 @@ tokenLoop:
 			newValue, _ = createMixin()
 
 		case REUSE:
-			userMixinChoice := getUserSelection("Choose a saved mixin:", getListOfMixins())
+			userMixinChoice := getUserSelection(
+				"Choose a saved mixin:",
+				getListOfMixins(),
+			)
 
 			mixin, err := getMixin(userMixinChoice)
 			if err != nil {
@@ -62,9 +65,13 @@ func getUserHandleVariableChoice(token Token) UserChoice {
 		moveOnString = SKIP
 	}
 
-	return getUserSelection("Options for populating {{"+tokenName+"}}", createOptionMap(
-		CREATE_NEW,
-		REUSE,
-		moveOnString,
-	), "2")
+	return getUserSelection(
+		"Options for populating {{"+tokenName+"}}",
+		createOptionMap(
+			CREATE_NEW,
+			REUSE,
+			moveOnString,
+		),
+		"2",
+	)
 }
