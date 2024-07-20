@@ -24,7 +24,11 @@ tokenLoop:
 
 		switch userChoice {
 		case CREATE_NEW:
-			newValue, _ = createMixin()
+			var e error
+			newValue, e = createMixin()
+			if e != nil {
+				panic(e)
+			}
 
 		case REUSE:
 			userMixinChoice := getUserSelection(

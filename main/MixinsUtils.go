@@ -13,12 +13,18 @@ func createMixin() (string, error) {
 
 	now := time.Now().UnixNano()
 	tempFilename := getMixinPathFromName(UserChoice(now))
-	writeStringToFile("# your mixin here", tempFilename)
+	e := writeStringToFile("# your mixin here", tempFilename)
+	if e != nil {
+		panic(e)
+	}
 	defer os.Remove(string(tempFilename))
 
 	// edit file
 	fmt.Println("Opening mixin editor...")
-	editFileInUserPreferredEditor(tempFilename)
+	e = editFileInUserPreferredEditor(tempFilename)
+	if e != nil {
+		panic(e)
+	}
 
 	// save file with user-specified name
 	for {

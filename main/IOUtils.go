@@ -19,8 +19,8 @@ func segmentsToPath(segments ...string) Path {
 	return Path(strings.Join(segments, string(os.PathSeparator)))
 }
 
-func writeStringToFile(data string, path Path) {
-	os.WriteFile(string(path), []byte(data), os.ModePerm)
+func writeStringToFile(data string, path Path) error {
+	return os.WriteFile(string(path), []byte(data), os.ModePerm)
 }
 
 func readStringFromFile(path Path) (string, error) {
@@ -29,7 +29,7 @@ func readStringFromFile(path Path) (string, error) {
 	return string(data), err
 }
 
-func editFileInUserPreferredEditor(filename Path) {
+func editFileInUserPreferredEditor(filename Path) error {
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
 		editor = os.Getenv("VISUAL")
@@ -42,7 +42,7 @@ func editFileInUserPreferredEditor(filename Path) {
 	editorProcess.Stdin = os.Stdin
 	editorProcess.Stdout = os.Stdout
 	editorProcess.Stderr = os.Stderr
-	editorProcess.Run()
+	return editorProcess.Run()
 }
 
 func deleteFile(path Path) {
