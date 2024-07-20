@@ -21,7 +21,7 @@ func main() {
 
 		switch userChoice {
 		case BUILD_DOCKERFILE:
-			template := readStringFromFile("/home/zarinloosli/docker-composer/example.tplt")
+			template, _ := readStringFromFile("/home/zarinloosli/docker-composer/example.tplt")
 			ast := tokenize(template)
 			for i, token := range ast {
 				if token.kind == variable {

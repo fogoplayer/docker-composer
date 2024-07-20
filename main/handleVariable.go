@@ -24,10 +24,31 @@ tokenLoop:
 
 		switch userChoice {
 		case CREATE_NEW:
-			newValue = createMixin()
+			newValue, _ = createMixin()
 
 		case "2":
-			newValue = getUserMixinChoice()
+			userMixinChoice := getUserMixinChoice()
+			numberToMixin := listMixins()
+
+			// if a number
+			num, err := strconv.Atoi(userMixinChoice)
+			if err == nil {
+				mixin, err := getMixin(numberToMixin[num])
+				if err != nil {
+					fmt.Println("Unable to retrieve mixin. Please try again.")
+					break
+				}
+				newValue = mixin
+				break
+			}
+
+			// if a full string
+			mixin, err := getMixin(userMixinChoice)
+			if err != nil {
+				fmt.Println("Unable to retrieve mixin. Please try again.")
+				break
+			}
+			newValue = mixin
 
 		case "3":
 			break tokenLoop
@@ -75,18 +96,9 @@ func getUserMixinChoice() string {
 	defaultChoice := 1
 
 	fmt.Println("Saved mixins:")
-	numberToMixin := listMixins()
+	printSelectionList(listMixins())
+
 	fmt.Printf("Which would you like to choose? (%d): ", defaultChoice)
 
-	/* bytes, err :=  */
-	userChoice := readLineFromStdInAsString(string(defaultChoice))
-
-	// if a number
-	num, err := strconv.Atoi(userChoice)
-	if err == nil {
-		return getMixin(numberToMixin[num])
-	}
-
-	// if a full string
-	return getMixin(userChoice)
+	return readLineFromStdInAsString(string(defaultChoice))
 }

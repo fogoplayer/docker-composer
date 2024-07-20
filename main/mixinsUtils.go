@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 )
 
 var mixinDirPath string = segmentsToPath(contentPath, "mixins")
 
-func createMixin() string {
+func createMixin() (string, error) {
 	// Create temporary mixin file
 	os.MkdirAll(mixinDirPath, os.ModePerm) // TODO slight vulnerability
 
@@ -35,7 +34,7 @@ func getMixinPathFromName(name string) string {
 	return segmentsToPath(mixinDirPath, name+".mxin")
 }
 
-func getMixin(name string) string {
+func getMixin(name string) (string, error) {
 	return readStringFromFile(getMixinPathFromName(name))
 }
 
@@ -47,8 +46,6 @@ func listMixins() map[int]string {
 		i = i + 1 // 0-index to 1-index
 		filename := file.Name()
 		filename = filename[:len(filename)-5]
-
-		fmt.Println("\t", strconv.Itoa(i)+")", filename)
 		numberToMixin[i] = filename
 	}
 
