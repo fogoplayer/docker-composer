@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path"
 )
 
 const (
@@ -287,7 +288,7 @@ selectTemplateLoop:
 
 // parses command-line arguments
 func handleCLArgs(args []string) (UserChoice, []string) {
-	workingDirectory = Path(args[0])
+	workingDirectory = Path(path.Dir(args[0]))
 	args = args[1:]
 
 	if len(args) == 0 {
