@@ -25,7 +25,7 @@ func tokenize(template string) []Token {
 	tokenStart := 0
 	tokens := []Token{}
 
-	for i := 0; i < len(template)-2; i++ {
+	for i := 0; i <= len(template)-2; i++ {
 		// technically I should be keeping track of open and close and making sure they match
 		// I'm not worried about that rn
 		if template[i:i+2] == open {
