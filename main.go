@@ -19,7 +19,7 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 // Entry point for docker-composer
 func main() {
 	userChoice, remainingArgs := handleCLArgs(os.Args)
-	cliMode := userChoice != ""
+	cliMode := userChoice != INVALID
 
 	for {
 		if userChoice == INVALID {
