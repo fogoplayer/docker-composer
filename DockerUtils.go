@@ -10,7 +10,7 @@ func buildDockerfileFromAst(ast []Token) string {
 
 	for _, token := range ast {
 		for _, value := range token.values {
-			fmt.Fprint(&dockerfileBuilder, value)
+			fmt.Fprint(&dockerfileBuilder, value+"\n")
 		}
 	}
 
