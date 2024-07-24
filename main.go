@@ -20,7 +20,7 @@ var contentPath = segmentsToPath(home, ".config", "docker-composer")
 // Entry point for docker-composer
 func main() {
 	userChoice, remainingArgs := handleCLArgs(os.Args)
-	cliMode := userChoice != INVALID
+	cliMode := len(remainingArgs) > 0
 
 	for {
 		if userChoice == INVALID {
@@ -185,14 +185,18 @@ selectTemplateLoop:
 			)
 		}
 
+		templatePath := getTemplatePathFromName(selectedTemplate)
+		if !fileExists(templatePath) {
+			// Let the default block in the switch work for us
+			selectedAction = INVALID
+		}
+
 		switch selectedAction {
 		case EDIT:
-			templatePath := getTemplatePathFromName(selectedTemplate)
 			editFileInUserPreferredEditor(templatePath)
 			break selectTemplateLoop
 
 		case DELETE:
-			templatePath := getTemplatePathFromName(selectedTemplate)
 			deleteFile(templatePath)
 			break selectTemplateLoop
 
@@ -266,14 +270,18 @@ selectTemplateLoop:
 			)
 		}
 
+		mixinPath := getMixinPathFromName(selectedMixin)
+		if !fileExists(mixinPath) {
+			// Let the default block in the switch work for us
+			selectedAction = INVALID
+		}
+
 		switch selectedAction {
 		case EDIT:
-			mixinPath := getMixinPathFromName(selectedMixin)
 			editFileInUserPreferredEditor(mixinPath)
 			break selectTemplateLoop
 
 		case DELETE:
-			mixinPath := getMixinPathFromName(selectedMixin)
 			deleteFile(mixinPath)
 			break selectTemplateLoop
 
