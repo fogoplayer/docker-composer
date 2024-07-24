@@ -19,8 +19,9 @@ const (
 func populateVariableWithMixins(token Token, providedValues ...UserChoice) Token {
 	var userChoice UserChoice = INVALID
 	var newValue string
+	cliMode := len(providedValues) > 0
 
-	if len(providedValues) > 0 {
+	if cliMode {
 		userChoice = providedValues[0]
 		println("Populating {{"+token.name+"}} with mixin", userChoice)
 	}
@@ -38,7 +39,9 @@ tokenLoop:
 			if e != nil {
 				panic(e)
 			}
-			break tokenLoop
+			if cliMode {
+				break tokenLoop
+			}
 
 		case CONTINUE:
 			fallthrough
@@ -49,7 +52,9 @@ tokenLoop:
 			mixin, e := getMixinContents(userChoice)
 			if e == nil {
 				newValue = mixin
-				break tokenLoop
+				if cliMode {
+					break tokenLoop
+				}
 			}
 
 			fmt.Println("Invalid input. Please try again")
