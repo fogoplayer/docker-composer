@@ -109,14 +109,15 @@ func buildDockerfileMenuOption(defaults ...string) {
 		if len((*variables)[key]) > 0 {
 			continue
 		}
+
+		var values []string
 		if len(defaults) > 0 {
-			populatedToken := populateVariableWithMixins(Token{name: key}, UserChoice(defaults[0]))
-			(*variables)[key] = populatedToken.values
+			values = populateVariableWithMixins(key, UserChoice(defaults[0]))
 			defaults = defaults[1:]
 		} else {
-			populatedToken := populateVariableWithMixins(Token{name: key})
-			(*variables)[key] = populatedToken.values
+			values = populateVariableWithMixins(key)
 		}
+		(*variables)[key] = values
 	}
 
 	for i, token := range ast {

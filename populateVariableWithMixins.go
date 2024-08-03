@@ -16,20 +16,21 @@ const (
 
 // TODO allow template authors to provide defaults for tokens
 
-func populateVariableWithMixins(token Token, providedValues ...UserChoice) Token {
+func populateVariableWithMixins(variableName string, providedValues ...UserChoice) []string {
 	var newValue string
 	userChoice := INVALID
 	cliMode := len(providedValues) > 0
+	contents := []string{}
 
 	if len(providedValues) > 0 {
 		userChoice = providedValues[0]
-		println("Populating {{"+token.name+"}} with mixin", userChoice)
+		println("Populating {{"+variableName+"}} with mixin", userChoice)
 	}
 
 tokenLoop:
 	for {
 		if userChoice == INVALID {
-			userChoice = getUserMixinChoice(token)
+			userChoice = getUserMixinChoice(variableName, len(contents) > 0)
 		}
 
 		switch userChoice {
@@ -57,7 +58,7 @@ tokenLoop:
 			continue
 		}
 
-		token.values = append(token.values, newValue)
+		contents = append(contents, newValue)
 		userChoice = INVALID
 
 		if cliMode {
@@ -65,16 +66,14 @@ tokenLoop:
 		}
 	}
 
-	return token
+	return contents
 }
 
-func getUserMixinChoice(token Token) UserChoice {
+func getUserMixinChoice(tokenName string, hasBeenPopulated bool) UserChoice {
 	// Create prompt
-	tokenName := token.name
-
 	var moveOnString UserChoice
 	var defaultChoice UserChoice
-	if len(token.values) > 0 {
+	if hasBeenPopulated {
 		moveOnString = CONTINUE
 		defaultChoice = UserChoice(strconv.Itoa(len(getListOfMixins()) + 2)) // because we append two options
 	} else {
