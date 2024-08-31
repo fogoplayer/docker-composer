@@ -104,12 +104,13 @@ func buildDockerfileMenuOption(defaults ...string) {
 		}
 	}
 
-	ast, variables := tokenize(templateContents)
+	ast := tokenize(templateContents)
 
+	variables := make(map[string][]string)
 	for i, token := range ast {
 		if token.kind == VARIABLE {
 			// don't read input if the name has been memoized
-			if len((*variables)[token.name]) == 0 {
+			if len((variables)[token.name]) == 0 {
 				var values []string
 
 				if len(defaults) > 0 {
@@ -118,10 +119,10 @@ func buildDockerfileMenuOption(defaults ...string) {
 				} else {
 					values = populateVariableWithMixins(token.name)
 				}
-				(*variables)[token.name] = values
+				(variables)[token.name] = values
 			}
 
-			ast[i] = Token{values: (*variables)[token.name]}
+			ast[i] = Token{values: (variables)[token.name]}
 		}
 	}
 

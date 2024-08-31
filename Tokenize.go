@@ -21,10 +21,9 @@ const (
 )
 
 // FUNCTION
-func tokenize(template string) ([]Token, *map[string][]string) {
+func tokenize(template string) []Token {
 	tokenStart := 0
 	tokens := []Token{}
-	variables := make(map[string][]string)
 
 	for i := 0; i <= len(template)-2; i++ {
 		// technically I should be keeping track of open and close and making sure they match
@@ -42,7 +41,6 @@ func tokenize(template string) ([]Token, *map[string][]string) {
 				values: []string{},
 			}
 			tokens = append(tokens, newToken)
-			variables[newToken.name] = []string{}
 		} else {
 			continue
 		}
@@ -58,5 +56,5 @@ func tokenize(template string) ([]Token, *map[string][]string) {
 		})
 	}
 
-	return tokens, &variables
+	return tokens
 }
